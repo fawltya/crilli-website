@@ -71,7 +71,7 @@ export default async function HomePage() {
       const imageUrl = event.image_url || event.images?.header || ''
 
       // Get the first ticket type price or default to '0'
-      const price = event.ticket_types?.[0]?.price || '0'
+      const price = event.ticket_types?.[0]?.price?.toString() || '0'
 
       return {
         id: event.id,
