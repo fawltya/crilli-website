@@ -1,4 +1,4 @@
-import { sometypeMono } from '../fonts'
+import { sometypeMono } from '@/fonts'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
