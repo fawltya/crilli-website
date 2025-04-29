@@ -19,16 +19,16 @@ export default function EventCard({ event }: { event: EventCardProps['event'] })
   const isFree = !event.price || event.price.trim() === '0' || event.price.toLowerCase() === 'free'
   const dateObj = new Date(event.date)
   const dateStr = dateObj.toLocaleDateString('en-GB', {
-    weekday: 'short',
+    // weekday: 'short',
     day: '2-digit',
     month: 'short',
     year: 'numeric',
   })
 
   return (
-    <div className="overflow-hidden shadow-lg max-w-md w-full">
+    <div className="overflow-hidden shadow-lg max-w-md w-full h-full flex flex-col">
       <div className="relative w-full aspect-[4/5] rounded-lg overflow-hidden">
-        <Link href={event.eventLink || ''}>
+        <Link href={event.eventLink || ''} target="_blank" rel="noopener noreferrer">
           <Image
             src={event.posterImage.url}
             alt={event.title}
@@ -38,17 +38,21 @@ export default function EventCard({ event }: { event: EventCardProps['event'] })
           />
         </Link>
       </div>
-      <div className="py-4 px-2 flex flex-row gap-4 justify-between">
-        <div className="min-w-50">
-          <h2 className="text-lg font-bold text-crilli-50 pb-3">{event.title}</h2>
-          <p className="text-sm text-crilli-200">{event.venue.name}</p>
-          <p className="text-sm text-crilli-200">{event.venue.city}</p>
+      <div className="py-6 px-2 flex flex-row gap-4 justify-between flex-grow">
+        <div className="w-full flex flex-col justify-between">
+          <h2 className="text-lg leading-5 font-bold text-crilli-50 pb-1 line-clamp-2">
+            {event.title}
+          </h2>
+          <div>
+            <p className="text-sm text-crilli-200">{event.venue.name}</p>
+            <p className="text-sm text-crilli-200">{event.venue.city}</p>
+          </div>
         </div>
         <div>
           <Separator className="bg-crilli-400 w-full" orientation="vertical" />
         </div>
-        <div className="flex flex-col text-end justify-between ">
-          <p className="text-crilli-50 text-sm mt-1">{dateStr}</p>
+        <div className="flex flex-col text-end items-end justify-between min-w-27">
+          <p className="text-crilli-50 text-sm">{dateStr}</p>
 
           <Button variant="outline" asChild>
             <Link href={event.eventLink || ''} target="_blank" rel="noopener noreferrer">
@@ -57,7 +61,7 @@ export default function EventCard({ event }: { event: EventCardProps['event'] })
           </Button>
         </div>
       </div>
-      <Separator className="bg-crilli-400 w-full mt-4" orientation="horizontal" />
+      <Separator className="bg-crilli-400 w-full mt-2" orientation="horizontal" />
     </div>
   )
 }

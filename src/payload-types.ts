@@ -181,11 +181,11 @@ export interface Event {
   title: string;
   date: string;
   /**
-   * Enter the start time (e.g., "7:00 PM")
+   * Enter the start time in 24hr (e.g., "22:00")
    */
   startTime: string;
   /**
-   * Enter the end time (e.g., "10:00 PM")
+   * Enter the end time in 24hr (e.g., "03:00")
    */
   endTime: string;
   /**
@@ -193,7 +193,7 @@ export interface Event {
    */
   venue: string | Venue;
   /**
-   * Enter the price (e.g., "Free", "$20", "£15")
+   * Enter the price, use 0 for free and no £ prefix needed (e.g., "0", "10", "12.50")
    */
   price?: string | null;
   /**

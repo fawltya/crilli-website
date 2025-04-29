@@ -10,6 +10,12 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'uploads.tickettailor.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 }

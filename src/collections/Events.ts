@@ -31,7 +31,7 @@ export const Events: CollectionConfig = {
       type: 'text',
       required: true,
       admin: {
-        description: 'Enter the start time (e.g., "7:00 PM")',
+        description: 'Enter the start time in 24hr (e.g., "22:00")',
       },
     },
     {
@@ -39,7 +39,7 @@ export const Events: CollectionConfig = {
       type: 'text',
       required: true,
       admin: {
-        description: 'Enter the end time (e.g., "10:00 PM")',
+        description: 'Enter the end time in 24hr (e.g., "03:00")',
       },
     },
     {
@@ -55,7 +55,8 @@ export const Events: CollectionConfig = {
       name: 'price',
       type: 'text',
       admin: {
-        description: 'Enter the price (e.g., "Free", "$20", "£15")',
+        description:
+          'Enter the price, use 0 for free and no £ prefix needed (e.g., "0", "10", "12.50")',
       },
     },
     {
