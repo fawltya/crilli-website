@@ -41,7 +41,7 @@ export default async function HomePage() {
       const venue = event.venue as Venue
 
       return {
-        id: event.id,
+        id: String(event.id),
         title: event.title,
         date: event.date,
         posterImage: { url: posterImage.url || '' },

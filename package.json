@@ -17,9 +17,8 @@
   "dependencies": {
     "@headlessui/react": "^2.2.2",
     "@payloadcms/db-mongodb": "3.33.0",
-    "@payloadcms/db-postgres": "3.33.0",
+    "@payloadcms/db-vercel-postgres": "^3.37.0",
     "@payloadcms/next": "3.33.0",
-    "@payloadcms/payload-cloud": "3.33.0",
     "@payloadcms/richtext-lexical": "3.33.0",
     "@radix-ui/react-separator": "^1.1.4",
     "@radix-ui/react-slot": "^1.2.0",
@@ -28,11 +27,12 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cross-env": "^7.0.3",
+    "dotenv": "^16.5.0",
     "graphql": "^16.8.1",
     "lucide-react": "^0.503.0",
     "next": "15.3.0",
     "payload": "3.33.0",
-    "pg": "^8.15.6",
+    "pg": "8.10.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "sharp": "0.32.6",
@@ -49,7 +49,8 @@
     "postcss": "^8.5.3",
     "prettier": "^3.4.2",
     "tailwindcss": "^4.1.4",
-    "typescript": "5.7.3"
+    "typescript": "5.7.3",
+    "webpack": "^5.99.8"
   },
   "engines": {
     "node": "^18.20.2 || >=20.9.0",
