@@ -1,27 +1,9 @@
 import type { CollectionConfig } from 'payload'
-import { put } from '@vercel/blob'
 
 export const Media: CollectionConfig = {
   slug: 'media',
   access: {
     read: () => true,
-  },
-  hooks: {
-    beforeChange: [
-      async ({ req, data }) => {
-        if (req.file) {
-          const blob = await put(req.file.name, req.file.data, {
-            access: 'public',
-          })
-          return {
-            ...data,
-            url: blob.url,
-            filename: blob.pathname,
-          }
-        }
-        return data
-      },
-    ],
   },
   upload: {
     mimeTypes: ['image/*', 'video/*', 'application/pdf'],

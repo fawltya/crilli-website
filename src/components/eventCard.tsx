@@ -30,11 +30,21 @@ export default function EventCard({ event }: { event: EventCardProps['event'] })
       <div className="relative w-full aspect-[4/5] rounded-lg overflow-hidden">
         <Link href={event.eventLink || ''} target="_blank" rel="noopener noreferrer">
           <Image
-            src={event.posterImage.url}
+            src={
+              // If it's already a full URL with http(s)
+              event.posterImage.url.startsWith('http') 
+                ? event.posterImage.url 
+                // If it starts with /api (relative path)
+                : event.posterImage.url.startsWith('/api')
+                  ? `https://crilli-website.vercel.app${event.posterImage.url}`
+                  // Otherwise add /api/media/file/ prefix
+                  : `https://crilli-website.vercel.app/api/media/file/${event.posterImage.url}`
+            }
             alt={event.title}
             fill
             className="object-cover"
             sizes="(max-width: 768px) 100vw, 400px"
+            unoptimized
           />
         </Link>
       </div>

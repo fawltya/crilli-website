@@ -101,6 +101,7 @@ export default async function HomePage() {
             alt="Your alt text"
             width={400}
             height={300}
+            unoptimized
           />
           <div className="max-w-4xl text-center pt-10">
             <p className="mb-4">
