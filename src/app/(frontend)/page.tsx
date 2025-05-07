@@ -7,7 +7,7 @@ import config from '@/payload.config'
 import './styles.css'
 import EventCard from '@/components/eventCard'
 import type { Event, Media, Venue } from '@/payload-types'
-import { getTicketTailorEvents } from '@/lib/tickettailor'
+// import { getTicketTailorEvents } from '@/lib/tickettailor'
 
 interface CombinedEvent {
   id: string
@@ -32,7 +32,7 @@ export default async function HomePage() {
   })
 
   // Fetch Ticket Tailor events
-  const ticketTailorEvents = await getTicketTailorEvents()
+  // const ticketTailorEvents = await getTicketTailorEvents()
 
   // Combine and transform events
   const combinedEvents: CombinedEvent[] = [
@@ -54,37 +54,37 @@ export default async function HomePage() {
         source: 'cms' as const,
       }
     }),
-    ...ticketTailorEvents.map((event) => {
-      // Extract city from address or use a default
-      let city = 'Belfast' // Default city
-      if (event.venue?.address) {
-        const addressParts = event.venue.address.split(',')
-        const lastPart = addressParts[addressParts.length - 1]?.trim()
-        if (lastPart) {
-          city = lastPart
-        }
-      }
+    // ...ticketTailorEvents.map((event) => {
+    //   // Extract city from address or use a default
+    //   let city = 'Belfast' // Default city
+    //   if (event.venue?.address) {
+    //     const addressParts = event.venue.address.split(',')
+    //     const lastPart = addressParts[addressParts.length - 1]?.trim()
+    //     if (lastPart) {
+    //       city = lastPart
+    //     }
+    //   }
 
-      // Get the first available image URL
-      const imageUrl = event.image_url || event.images?.header || ''
+    //   // Get the first available image URL
+    //   const imageUrl = event.image_url || event.images?.header || ''
 
-      // Get the first ticket type price or default to '0'
-      const price = event.ticket_types?.[0]?.price?.toString() || '0'
+    //   // Get the first ticket type price or default to '0'
+    //   const price = event.ticket_types?.[0]?.price?.toString() || '0'
 
-      return {
-        id: event.id,
-        title: event.name,
-        date: event.start?.iso || new Date().toISOString(),
-        posterImage: { url: imageUrl },
-        venue: {
-          name: event.venue?.name || 'Unknown Venue',
-          city: city,
-        },
-        price: price,
-        eventLink: event.checkout_url,
-        source: 'tickettailor' as const,
-      }
-    }),
+    //   return {
+    //     id: event.id,
+    //     title: event.name,
+    //     date: event.start?.iso || new Date().toISOString(),
+    //     posterImage: { url: imageUrl },
+    //     venue: {
+    //       name: event.venue?.name || 'Unknown Venue',
+    //       city: city,
+    //     },
+    //     price: price,
+    //     eventLink: event.checkout_url,
+    //     source: 'tickettailor' as const,
+    //   }
+    // }),
   ]
 
   // Sort events by date
