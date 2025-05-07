@@ -86,7 +86,7 @@ export interface Config {
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
-    defaultIDType: string;
+    defaultIDType: number;
   };
   globals: {};
   globalsSelect: {};
@@ -122,7 +122,7 @@ export interface UserAuthOperations {
  * via the `definition` "users".
  */
 export interface User {
-  id: string;
+  id: number;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -139,7 +139,7 @@ export interface User {
  * via the `definition` "media".
  */
 export interface Media {
-  id: string;
+  id: number;
   alt: string;
   caption?: string | null;
   updatedAt: string;
@@ -177,7 +177,7 @@ export interface Media {
  * via the `definition` "events".
  */
 export interface Event {
-  id: string;
+  id: number;
   title: string;
   date: string;
   /**
@@ -191,7 +191,7 @@ export interface Event {
   /**
    * Select the venue for this event
    */
-  venue: string | Venue;
+  venue: number | Venue;
   /**
    * Enter the price, use 0 for free and no £ prefix needed (e.g., "0", "10", "12.50")
    */
@@ -203,7 +203,7 @@ export interface Event {
   /**
    * Upload the event poster image
    */
-  posterImage: string | Media;
+  posterImage: number | Media;
   updatedAt: string;
   createdAt: string;
 }
@@ -212,7 +212,7 @@ export interface Event {
  * via the `definition` "venues".
  */
 export interface Venue {
-  id: string;
+  id: number;
   name: string;
   city: string;
   /**
@@ -227,28 +227,28 @@ export interface Venue {
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
-  id: string;
+  id: number;
   document?:
     | ({
         relationTo: 'users';
-        value: string | User;
+        value: number | User;
       } | null)
     | ({
         relationTo: 'media';
-        value: string | Media;
+        value: number | Media;
       } | null)
     | ({
         relationTo: 'events';
-        value: string | Event;
+        value: number | Event;
       } | null)
     | ({
         relationTo: 'venues';
-        value: string | Venue;
+        value: number | Venue;
       } | null);
   globalSlug?: string | null;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   updatedAt: string;
   createdAt: string;
@@ -258,10 +258,10 @@ export interface PayloadLockedDocument {
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-  id: string;
+  id: number;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   key?: string | null;
   value?:
@@ -281,7 +281,7 @@ export interface PayloadPreference {
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-  id: string;
+  id: number;
   name?: string | null;
   batch?: number | null;
   updatedAt: string;
