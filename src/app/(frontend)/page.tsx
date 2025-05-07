@@ -1,4 +1,4 @@
-import { headers as getHeaders } from 'next/headers.js'
+// import { headers as getHeaders } from 'next/headers.js'
 import Image from 'next/image'
 import { getPayload } from 'payload'
 import React from 'react'
@@ -21,7 +21,7 @@ interface CombinedEvent {
 }
 
 export default async function HomePage() {
-  const headers = await getHeaders()
+  // const headers = await getHeaders()
   const payloadConfig = await config
   const payload = await getPayload({ config: payloadConfig })
 
@@ -93,7 +93,7 @@ export default async function HomePage() {
   )
 
   return (
-    <main className="bg-crilli-900 text-crilli-50 uppercase p-20 font-main">
+    <main className="bg-crilli-900 text-crilli-50 uppercase  py-20 lg:px-20 px-8 font-main">
       <div className="container mx-auto max-w-7xl">
         <div className="relative flex items-center justify-center flex-col ">
           <Image
@@ -108,16 +108,18 @@ export default async function HomePage() {
               in Belfast.
             </p>
             <p>
-              We have been a part of Ireland&apos;s underground music culture for nearly two
-              decades, giving artists like Goldie, Calibre, DJ Hazard, Sully, London Elektricity and
-              DJ MArky the pleasure of experiencing beautiful Belfast audiences.
+              We have been a part of Ireland&apos;s underground music culture for two decades,
+              giving artists like Goldie, Calibre, DJ Hazard, Sully, London Elektricity and DJ MArky
+              the pleasure of experiencing beautiful Belfast audiences.
             </p>
           </div>
         </div>
         <div>
-          <h2 className="text-crilli-50  mt-20 mb-8 text-xl font-semibold">Upcoming Events</h2>
+          <h2 className="text-crilli-50  mt-20 mb-8 text-xl text-center font-semibold">
+            Upcoming Events
+          </h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 gap-y-15 auto-rows-fr">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 gap-y-15 auto-rows-fr justify-items-center">
           {sortedEvents.map((event) => (
             <EventCard key={`${event.source}-${event.id}`} event={event} />
           ))}
