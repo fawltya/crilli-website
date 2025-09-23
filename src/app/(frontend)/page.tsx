@@ -151,13 +151,14 @@ export default async function HomePage() {
             <EventCard key={`${event.source}-${event.id}`} event={event} />
           ))}
         </div>
-        <div className="mt-10">
+        <div className="mt-16 w-full ">
           <Image
             src="/api/media/file/Crilli%20DnB%20-%20Kev.jpg"
             alt="Your alt text"
-            width={1200}
-            height={500}
             unoptimized
+            className="rounded-sm overflow-hidden"
+            width={1200}
+            height={400}
           />
         </div>
         <div>
