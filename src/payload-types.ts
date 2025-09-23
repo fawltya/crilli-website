@@ -232,7 +232,7 @@ export interface Podcast {
   id: number;
   artist: string;
   /**
-   * Should follow 2025/01 format
+   * Should follow 2025/01 format (year/episode number)
    */
   number: string;
   /**

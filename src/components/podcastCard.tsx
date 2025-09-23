@@ -24,7 +24,7 @@ export default function PodcastCard({ podcast }: { podcast: PodcastCardProps['po
   // })
 
   return (
-    <div className="relative overflow-hidden shadow-lg max-w-md w-full h-full flex flex-col pt-7 pb-6 px-7">
+    <div className="relative overflow-hidden shadow-lg max-w-md w-full h-full flex flex-col pt-7 pb-6 px-7 aspect-[1/1] justify-between">
       {/* --- Corner Border Overlay --- */}
       <div className="pointer-events-none absolute inset-0">
         {/* top-left */}
@@ -42,7 +42,7 @@ export default function PodcastCard({ podcast }: { podcast: PodcastCardProps['po
       </div>
 
       {/* --- Image --- */}
-      <div className="relative w-full aspect-[1/1] overflow-hidden">
+      <div className="relative aspect-[1/1] overflow-hidden w-full h-48">
         <Link href={podcast.podcastLink || ''} target="_blank" rel="noopener noreferrer">
           <Image
             src={
@@ -62,7 +62,7 @@ export default function PodcastCard({ podcast }: { podcast: PodcastCardProps['po
       </div>
 
       {/* --- Text Row --- */}
-      <div className="pt-3 px-1 flex flex-row w-full justify-between">
+      <div className="pt-3 px-1 flex flex-row w-full gap-3 justify-between">
         <p className="text-sm text-crilli-200">{podcast.artist}</p>
         <p className="text-sm text-crilli-200">{podcast.date}</p>
       </div>

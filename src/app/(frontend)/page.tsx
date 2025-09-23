@@ -1,7 +1,7 @@
 // import { headers as getHeaders } from 'next/headers.js'
 import Image from 'next/image'
 import { getPayload } from 'payload'
-import React from 'react'
+// import React from 'react'
 
 import config from '@/payload.config'
 import './styles.css'
@@ -104,10 +104,18 @@ export default async function HomePage() {
     const posterImage = podcast.posterImage as Media
     return {
       artist: podcast.artist,
-      date: podcast.number, // using `number` as display string
+      date: podcast.number, // using `number` as display string (e.g., "2025/01")
       posterImage: { url: posterImage.url || '' },
       podcastLink: podcast.eventLink ?? null,
     }
+  })
+
+  // Sort podcasts by number field (which contains episode numbers like "2025/01")
+  const sortedPodcasts = podcastsForUi.sort((a, b) => {
+    // Convert "2025/01" format to numeric values for proper sorting
+    const numA = parseInt(a.date.replace('/', '')) // "2025/01" -> 202501
+    const numB = parseInt(b.date.replace('/', '')) // "2023/02" -> 202302
+    return numB - numA // Sort descending (newest first)
   })
 
   return (
@@ -157,10 +165,14 @@ export default async function HomePage() {
             Latest Podcasts
           </h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 gap-y-15 auto-rows-fr justify-items-center">
-          {podcastsForUi.map((podcast) => (
-            <PodcastCard key={`${podcast.artist}-${podcast.date}`} podcast={podcast} />
-          ))}
+        <div className="overflow-x-auto">
+          <div className="flex gap-6 pb-4 min-w-max">
+            {sortedPodcasts.map((podcast) => (
+              <div key={`${podcast.artist}-${podcast.date}`} className="flex-shrink-0 w-64">
+                <PodcastCard podcast={podcast} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </main>

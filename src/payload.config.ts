@@ -1,10 +1,8 @@
-// storage-adapter-import-placeholder
 import { vercelPostgresAdapter } from '@payloadcms/db-vercel-postgres'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
-import path from 'path'
+import * as path from 'path'
 import { buildConfig } from 'payload'
-import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
 import { Users } from './collections/Users'
@@ -13,8 +11,7 @@ import { Events } from './collections/Events'
 import { Venues } from './collections/Venues'
 import { Podcasts } from './collections/Podcasts'
 
-const filename = fileURLToPath(import.meta.url)
-const dirname = path.dirname(filename)
+const dirname = path.resolve(process.cwd(), 'src')
 export default buildConfig({
   admin: {
     user: Users.slug,

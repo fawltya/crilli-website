@@ -4,8 +4,9 @@ export const Podcasts: CollectionConfig = {
   slug: 'podcasts',
   admin: {
     useAsTitle: 'artist',
-    defaultColumns: ['artist'],
+    defaultColumns: ['number', 'artist'],
   },
+  defaultSort: '-createdAt',
   access: {
     read: () => true,
   },
@@ -20,7 +21,7 @@ export const Podcasts: CollectionConfig = {
       type: 'text',
       required: true,
       admin: {
-        description: 'Should follow 2025/01 format',
+        description: 'Should follow 2025/01 format (year/episode number)',
       },
     },
     {

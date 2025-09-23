@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
-    "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev --turbopack",
+    "dev": "cross-env NODE_OPTIONS=--no-deprecation PAYLOAD_PATCH_TURBOPACK_WARNINGS=false next dev --turbopack",
     "devsafe": "rm -rf .next && cross-env NODE_OPTIONS=--no-deprecation next dev",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
@@ -19,6 +19,7 @@
     "@payloadcms/db-mongodb": "3.33.0",
     "@payloadcms/db-vercel-postgres": "3.33.0",
     "@payloadcms/next": "3.33.0",
+    "@payloadcms/plugin-cloud-storage": "3.33.0",
     "@payloadcms/richtext-lexical": "3.33.0",
     "@payloadcms/storage-vercel-blob": "^3.33.0",
     "@radix-ui/react-separator": "^1.1.4",
@@ -42,7 +43,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
     "@tailwindcss/postcss": "^4.1.4",
-    "@types/node": "^22.5.4",
+    "@types/node": "^24.5.2",
     "@types/react": "19.1.0",
     "@types/react-dom": "19.1.2",
     "eslint": "^9.16.0",
