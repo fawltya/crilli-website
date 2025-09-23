@@ -134,6 +134,13 @@ export interface User {
   hash?: string | null;
   loginAttempts?: number | null;
   lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
   password?: string | null;
 }
 /**
@@ -206,6 +213,14 @@ export interface Event {
    * Upload the event poster image
    */
   posterImage: number | Media;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -230,6 +245,9 @@ export interface Venue {
  */
 export interface Podcast {
   id: number;
+  /**
+   * Artist name (max 25 characters)
+   */
   artist: string;
   /**
    * Should follow 2025/01 format (year/episode number)
@@ -243,6 +261,14 @@ export interface Podcast {
    * Upload the Podcast image - should be square
    */
   posterImage: number | Media;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -329,6 +355,13 @@ export interface UsersSelect<T extends boolean = true> {
   hash?: T;
   loginAttempts?: T;
   lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -386,6 +419,13 @@ export interface EventsSelect<T extends boolean = true> {
   price?: T;
   eventLink?: T;
   posterImage?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -409,6 +449,13 @@ export interface PodcastsSelect<T extends boolean = true> {
   number?: T;
   eventLink?: T;
   posterImage?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

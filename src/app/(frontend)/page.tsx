@@ -10,6 +10,14 @@ import PodcastCard from '@/components/podcastCard'
 import type { Event, Media, Venue, Podcast } from '@/payload-types'
 // import { getTicketTailorEvents } from '@/lib/tickettailor'
 
+// Force dynamic rendering to avoid static generation issues during migration
+export const dynamic = 'force-dynamic'
+
+export const metadata = {
+  title: 'Crilli DnB Belfast',
+  description: 'Established in 2005 Crilli is a Drum & Bass + Jungle promotion based in Belfast.',
+}
+
 interface CombinedEvent {
   id: string
   title: string
