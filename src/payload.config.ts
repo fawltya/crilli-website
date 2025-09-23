@@ -11,6 +11,7 @@ import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { Events } from './collections/Events'
 import { Venues } from './collections/Venues'
+import { Podcasts } from './collections/Podcasts'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -21,7 +22,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Events, Venues],
+  collections: [Users, Media, Events, Venues, Podcasts],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
@@ -41,7 +42,6 @@ export default buildConfig({
       },
       token: process.env.BLOB_READ_WRITE_TOKEN,
       clientUploads: true,
-    })
-  ]
-}
-)
+    }),
+  ],
+})

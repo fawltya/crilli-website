@@ -71,6 +71,7 @@ export interface Config {
     media: Media;
     events: Event;
     venues: Venue;
+    podcasts: Podcast;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -81,6 +82,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
     venues: VenuesSelect<false> | VenuesSelect<true>;
+    podcasts: PodcastsSelect<false> | PodcastsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -224,6 +226,28 @@ export interface Venue {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "podcasts".
+ */
+export interface Podcast {
+  id: number;
+  artist: string;
+  /**
+   * Should follow 2025/01 format
+   */
+  number: string;
+  /**
+   * Link to the Podcast
+   */
+  eventLink?: string | null;
+  /**
+   * Upload the Podcast image - should be square
+   */
+  posterImage: number | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -244,6 +268,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'venues';
         value: number | Venue;
+      } | null)
+    | ({
+        relationTo: 'podcasts';
+        value: number | Podcast;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -369,6 +397,18 @@ export interface VenuesSelect<T extends boolean = true> {
   name?: T;
   city?: T;
   link?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "podcasts_select".
+ */
+export interface PodcastsSelect<T extends boolean = true> {
+  artist?: T;
+  number?: T;
+  eventLink?: T;
+  posterImage?: T;
   updatedAt?: T;
   createdAt?: T;
 }

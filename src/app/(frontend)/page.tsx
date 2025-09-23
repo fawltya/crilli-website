@@ -6,7 +6,8 @@ import React from 'react'
 import config from '@/payload.config'
 import './styles.css'
 import EventCard from '@/components/eventCard'
-import type { Event, Media, Venue } from '@/payload-types'
+import PodcastCard from '@/components/podcastCard'
+import type { Event, Media, Venue, Podcast } from '@/payload-types'
 // import { getTicketTailorEvents } from '@/lib/tickettailor'
 
 interface CombinedEvent {
@@ -92,6 +93,23 @@ export default async function HomePage() {
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
   )
 
+  // Fetch Podcasts
+  const { docs: cmsPodcasts } = await payload.find({
+    collection: 'podcasts',
+    depth: 1,
+    sort: '-createdAt',
+  })
+
+  const podcastsForUi = cmsPodcasts.map((podcast: Podcast) => {
+    const posterImage = podcast.posterImage as Media
+    return {
+      artist: podcast.artist,
+      date: podcast.number, // using `number` as display string
+      posterImage: { url: posterImage.url || '' },
+      podcastLink: podcast.eventLink ?? null,
+    }
+  })
+
   return (
     <main className="bg-crilli-900 text-crilli-50 uppercase  py-20 lg:px-20 px-8 font-main">
       <div className="container mx-auto max-w-7xl">
@@ -123,6 +141,25 @@ export default async function HomePage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 gap-y-15 auto-rows-fr justify-items-center">
           {sortedEvents.map((event) => (
             <EventCard key={`${event.source}-${event.id}`} event={event} />
+          ))}
+        </div>
+        <div className="mt-10">
+          <Image
+            src="/api/media/file/Crilli%20DnB%20-%20Kev.jpg"
+            alt="Your alt text"
+            width={1200}
+            height={500}
+            unoptimized
+          />
+        </div>
+        <div>
+          <h2 className="text-crilli-50  mt-20 mb-8 text-xl text-center font-semibold">
+            Latest Podcasts
+          </h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 gap-y-15 auto-rows-fr justify-items-center">
+          {podcastsForUi.map((podcast) => (
+            <PodcastCard key={`${podcast.artist}-${podcast.date}`} podcast={podcast} />
           ))}
         </div>
       </div>
