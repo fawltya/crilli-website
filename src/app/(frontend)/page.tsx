@@ -7,6 +7,7 @@ import config from '@/payload.config'
 import './styles.css'
 import EventCard from '@/components/eventCard'
 import PodcastCard from '@/components/podcastCard'
+import ScrollButton from '@/components/ScrollButton'
 import type { Event, Media, Venue, Podcast } from '@/payload-types'
 // import { getTicketTailorEvents } from '@/lib/tickettailor'
 
@@ -176,14 +177,18 @@ export default async function HomePage() {
             Latest Podcasts
           </h2>
         </div>
-        <div className="overflow-x-auto">
-          <div className="flex gap-6 pb-4 min-w-max">
-            {sortedPodcasts.map((podcast) => (
-              <div key={`${podcast.artist}-${podcast.date}`} className="flex-shrink-0 w-64">
-                <PodcastCard podcast={podcast} />
-              </div>
-            ))}
+        <div className="relative flex flex-col gap-4">
+          <div className="overflow-x-auto scrollbar-hide" id="podcast-scroll">
+            <div className="flex gap-6 pb-4 min-w-max">
+              {sortedPodcasts.map((podcast) => (
+                <div key={`${podcast.artist}-${podcast.date}`} className="flex-shrink-0 w-64">
+                  <PodcastCard podcast={podcast} />
+                </div>
+              ))}
+            </div>
           </div>
+          {/* Scroll Right Button */}
+          <ScrollButton containerId="podcast-scroll" />
         </div>
       </div>
     </main>

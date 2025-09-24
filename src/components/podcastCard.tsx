@@ -16,7 +16,10 @@ type PodcastCardProps = {
 }
 
 export default function PodcastCard({ podcast }: { podcast: PodcastCardProps['podcast'] }) {
-  const { setTrack } = usePlayer()
+  const { setTrack, isCurrentTrack, isPlaying, togglePlay } = usePlayer()
+  const isCurrentlyPlaying = podcast.audioUrl ? isCurrentTrack(podcast.audioUrl) : false
+  const showPlayControls = isCurrentlyPlaying && isPlaying
+
   // const isFree = !podcast.price || podcast.price.trim() === '0' || podcast.price.toLowerCase() === 'free'
   // const dateObj = new Date(podcast.date)
   // const dateStr = dateObj.toLocaleDateString('en-GB', {
@@ -27,7 +30,7 @@ export default function PodcastCard({ podcast }: { podcast: PodcastCardProps['po
   // })
 
   return (
-    <div className="relative overflow-hidden shadow-lg max-w-md w-full h-full flex flex-col pt-7 pb-6 px-7 aspect-[1/1] justify-between">
+    <div className="relative overflow-hidden shadow-lg max-w-md w-full h-full flex flex-col pt-7 pb-6 px-7  justify-between">
       {/* --- Corner Border Overlay --- */}
       <div className="pointer-events-none absolute inset-0">
         {/* top-left */}
@@ -45,29 +48,62 @@ export default function PodcastCard({ podcast }: { podcast: PodcastCardProps['po
       </div>
 
       {/* --- Image --- */}
-      <div className="relative aspect-[1/1] overflow-hidden w-full h-48">
+      <div className="relative aspect-[1/1] overflow-visible w-full group">
         <button
           type="button"
           onClick={() => {
             if (!podcast.audioUrl) return
-            setTrack({
-              title: `${podcast.artist} — ${podcast.date}`,
-              artist: podcast.artist,
-              artworkUrl: podcast.posterImage.url,
-              audioUrl: podcast.audioUrl,
-              externalLink: podcast.podcastLink || undefined,
-            })
+            if (isCurrentlyPlaying) {
+              togglePlay()
+            } else {
+              setTrack({
+                title: `${podcast.artist} — ${podcast.date}`,
+                artist: podcast.artist,
+                date: podcast.date,
+                artworkUrl: podcast.posterImage.url,
+                audioUrl: podcast.audioUrl,
+                externalLink: podcast.podcastLink || undefined,
+              })
+            }
           }}
-          className="block w-full h-full"
+          className="block w-full h-full relative"
         >
           <Image
             src={buildMediaSrc(podcast.posterImage.url)}
             alt={podcast.artist}
             fill
-            className="object-cover"
+            className="object-cover aspect-square"
             sizes="(max-width: 768px) 100vw, 400px"
             unoptimized
           />
+
+          {/* Always visible pause icon when playing */}
+          {showPlayControls && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-md backdrop-opacity-30 z-10">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-16 h-16 text-white drop-shadow-lg"
+              >
+                <path d="M6 5h4v14H6zM14 5h4v14h-4z" />
+              </svg>
+            </div>
+          )}
+
+          {/* Hover play icon overlay (only show when not playing) */}
+          {!showPlayControls && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-md backdrop-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-16 h-16 text-white drop-shadow-lg"
+              >
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </div>
+          )}
         </button>
       </div>
 
@@ -76,8 +112,6 @@ export default function PodcastCard({ podcast }: { podcast: PodcastCardProps['po
         <p className="text-sm text-crilli-200">{podcast.artist}</p>
         <p className="text-sm text-crilli-200">{podcast.date}</p>
       </div>
-
-      {/* Player is now global; no inline audio element */}
     </div>
   )
 }
