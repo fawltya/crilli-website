@@ -6,7 +6,11 @@ const rateLimitMap = new Map<string, { count: number; resetTime: number }>()
 export async function POST(request: NextRequest) {
   try {
     const { email, honeypot, timestamp, recaptchaToken } = await request.json()
-    const clientIP = request.ip || request.headers.get('x-forwarded-for') || 'unknown'
+    const clientIP =
+      request.headers.get('x-forwarded-for') ||
+      request.headers.get('x-real-ip') ||
+      request.headers.get('cf-connecting-ip') ||
+      'unknown'
 
     // Honeypot check - if filled, it's likely a bot
     if (honeypot) {
