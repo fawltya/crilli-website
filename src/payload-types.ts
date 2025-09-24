@@ -190,13 +190,13 @@ export interface Event {
   title: string;
   date: string;
   /**
-   * Enter the start time in 24hr (e.g., "22:00")
+   * Enter the start time in 24hr format (e.g., "22:00") - Optional
    */
-  startTime: string;
+  startTime?: string | null;
   /**
-   * Enter the end time in 24hr (e.g., "03:00")
+   * Enter the end time in 24hr format (e.g., "03:00") - Optional
    */
-  endTime: string;
+  endTime?: string | null;
   /**
    * Select the venue for this event
    */

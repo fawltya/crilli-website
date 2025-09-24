@@ -7,10 +7,9 @@ import './styles.css'
 import EventCard from '@/components/eventCard'
 import PodcastCard from '@/components/podcastCard'
 import ScrollButton from '@/components/ScrollButton'
-import { Separator } from '@/components/ui/separator'
 import type { Event, Media, Venue, Podcast } from '@/payload-types'
-import IconWrapper from '@/components/IconWrapper'
-import SubscriptionForm from '@/components/SubscriptionForm'
+import { Button } from '@/components/ui/button'
+import Footer from '@/components/Footer'
 // import { getTicketTailorEvents } from '@/lib/tickettailor'
 
 export const metadata = {
@@ -104,6 +103,16 @@ export default async function HomePage() {
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
   )
 
+  // Filter events to only show today or future events
+  const today = new Date()
+  today.setHours(0, 0, 0, 0) // Set to start of today
+
+  const upcomingEvents = sortedEvents.filter((event) => {
+    const eventDate = new Date(event.date)
+    eventDate.setHours(0, 0, 0, 0) // Set to start of event day
+    return eventDate >= today
+  })
+
   // Fetch Podcasts
   const { docs: cmsPodcasts } = await payload.find({
     collection: 'podcasts',
@@ -159,10 +168,22 @@ export default async function HomePage() {
             Upcoming Events
           </h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 gap-y-15 auto-rows-fr justify-items-center">
-          {sortedEvents.map((event) => (
-            <EventCard key={`${event.source}-${event.id}`} event={event} />
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 gap-y-15 auto-rows-fr md:justify-items-start justify-items-center">
+          {upcomingEvents.length > 0 ? (
+            upcomingEvents.map((event) => (
+              <EventCard key={`${event.source}-${event.id}`} event={event} />
+            ))
+          ) : (
+            <div className="col-span-full text-left py-8">
+              <p className="text-crilli-200 text-lg">Nothing scheduled right now...</p>
+              <p className="text-crilli-400 text-sm mt-2">Check back soon for more events.</p>
+            </div>
+          )}
+        </div>
+        <div className="mt-8">
+          <Button asChild variant="outline">
+            <Link href="/previous-events">See Previous Events</Link>
+          </Button>
         </div>
         <div className="mt-16 w-full ">
           <Image
@@ -193,57 +214,7 @@ export default async function HomePage() {
           <ScrollButton containerId="podcast-scroll" />
         </div>
         {/* Footer */}
-        <div className="mt-16 w-full flex md:flex-row flex-col justify-between align-bottom md:gap-4 gap-10 items-center md:items-start">
-          <Image
-            src="https://jfkf0uemou6lrnps.public.blob.vercel-storage.com/Crilli%20Logo%20est%20belf.png"
-            alt="Your alt text"
-            width={200}
-            height={300}
-            unoptimized
-          />
-          <div className="flex flex-col gap-4 md:text-right justify-end md:align-end text-center">
-            <div>
-              <Link
-                href="#events"
-                className="hover:text-crilli-200 text-crilli-200/70 transition-all duration-300"
-              >
-                Events
-              </Link>{' '}
-              |{' '}
-              <Link
-                href="#podcasts"
-                className="hover:text-crilli-200 text-crilli-200/70 transition-all duration-300"
-              >
-                Podcasts
-              </Link>
-            </div>
-            <Separator className="bg-crilli-400/30 w-full" orientation="horizontal" />
-            <div>
-              <p className="text-sm text-crilli-200">
-                Sign up to our mailing list for early access to tickets
-              </p>
-            </div>
-            <SubscriptionForm />
-            <div className="flex gap-4 md:justify-end justify-center">
-              <Link href="https://www.instagram.com/crillidnb/" target="_blank">
-                <IconWrapper iconName="InstagramLogo" size={22} weight="light" />
-              </Link>
-              <Link href="https://www.facebook.com/CrilliDnB" target="_blank">
-                <IconWrapper iconName="FacebookLogo" size={22} weight="light" />
-              </Link>
-              <Link href="https://www.soundcloud.com/Crillidnb" target="_blank">
-                <IconWrapper iconName="SoundcloudLogo" size={22} weight="light" />
-              </Link>
-              <Link href="https://open.spotify.com/user/1116081744" target="_blank">
-                <IconWrapper iconName="SpotifyLogo" size={22} weight="light" />
-              </Link>
-              <Link href="https://www.youtube.com/channel/UCJI-M_xV5N_LUe22QBmPPTg" target="_blank">
-                <IconWrapper iconName="YoutubeLogo" size={22} weight="light" />
-              </Link>
-            </div>
-          </div>
-        </div>
-        <Separator className="bg-crilli-400/30 w-full mt-10" orientation="horizontal" />
+        <Footer />
       </div>
     </main>
   )
