@@ -12,6 +12,10 @@ export default function SubscriptionForm() {
   const [isSuccess, setIsSuccess] = useState(false)
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null)
   const recaptchaRef = useRef<ReCAPTCHA>(null)
+  const [formStartTime] = useState(() => Date.now()) // Set timestamp when component mounts
+
+  // Debug: Check if site key is loaded
+  console.log('reCAPTCHA site key:', process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -26,9 +30,10 @@ export default function SubscriptionForm() {
     }
 
     // Execute invisible reCAPTCHA
+    let token: string | null = null
     if (recaptchaRef.current) {
       try {
-        const token = await recaptchaRef.current.executeAsync()
+        token = await recaptchaRef.current.executeAsync()
         setRecaptchaToken(token)
       } catch (error) {
         console.error('reCAPTCHA execution failed:', error)
@@ -39,7 +44,7 @@ export default function SubscriptionForm() {
     }
 
     // Check reCAPTCHA token
-    if (!recaptchaToken) {
+    if (!token) {
       setMessage('reCAPTCHA verification failed. Please try again.')
       setIsSubmitting(false)
       return
@@ -54,8 +59,8 @@ export default function SubscriptionForm() {
         body: JSON.stringify({
           email,
           honeypot, // Send honeypot value for server-side validation
-          timestamp: Date.now(), // Add timestamp for rate limiting
-          recaptchaToken, // Send reCAPTCHA token
+          timestamp: formStartTime, // Add timestamp for rate limiting
+          recaptchaToken: token, // Send reCAPTCHA token
         }),
       })
 
@@ -129,7 +134,7 @@ export default function SubscriptionForm() {
           type="submit"
           variant="outline"
           disabled={isSubmitting}
-          className="ml-2 fit-content   transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="ml-2 fit-content uppercase transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSubmitting ? 'Subscribing...' : 'Subscribe'}
         </Button>
@@ -140,7 +145,10 @@ export default function SubscriptionForm() {
           sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
           onChange={(token) => setRecaptchaToken(token)}
           onExpired={() => setRecaptchaToken(null)}
-          onError={() => setRecaptchaToken(null)}
+          onError={(error) => {
+            console.error('reCAPTCHA error:', error)
+            setRecaptchaToken(null)
+          }}
           size="invisible"
         />
       </form>

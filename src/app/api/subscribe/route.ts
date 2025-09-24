@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Basic timing check - if form submitted too quickly, might be a bot
-    if (timestamp && Date.now() - timestamp < 2000) {
+    if (timestamp && Date.now() - timestamp < 1000) {
       console.log('Suspicious timing detected:', {
         email,
         clientIP,
@@ -60,6 +60,13 @@ export async function POST(request: NextRequest) {
     // Validate reCAPTCHA token
     if (recaptchaToken) {
       const recaptchaSecret = process.env.RECAPTCHA_SECRET_KEY
+      console.log('reCAPTCHA validation attempt:', {
+        hasToken: !!recaptchaToken,
+        hasSecret: !!recaptchaSecret,
+        clientIP,
+        tokenLength: recaptchaToken.length,
+      })
+
       if (recaptchaSecret) {
         try {
           const recaptchaResponse = await fetch('https://www.google.com/recaptcha/api/siteverify', {
@@ -71,6 +78,7 @@ export async function POST(request: NextRequest) {
           })
 
           const recaptchaData = await recaptchaResponse.json()
+          console.log('reCAPTCHA response:', recaptchaData)
 
           if (!recaptchaData.success) {
             console.log('reCAPTCHA validation failed:', { email, clientIP, recaptchaData })
