@@ -1,13 +1,20 @@
-
 import { withPayload } from '@payloadcms/next/withPayload'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   webpack: (config) => {
-    config.externals = config.externals || [];
-    config.externals.push('cloudflare:sockets');
-    config.externals.push('pg-native');
-    return config;
+    config.externals = config.externals || []
+    config.externals.push('cloudflare:sockets')
+    config.externals.push('pg-native')
+    return config
+  },
+  async headers() {
+    return [
+      {
+        source: '/api/media/file/:path*',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
+    ]
   },
   turbopack: {
     resolveAlias: {

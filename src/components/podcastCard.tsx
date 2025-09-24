@@ -1,8 +1,9 @@
+'use client'
 import Image from 'next/image'
-import Link from 'next/link'
+import { buildMediaSrc } from '@/lib/utils'
+import { usePlayer } from '@/components/SitePlayer'
 
-import { Separator } from './ui/separator'
-import { Button } from './ui/button'
+// removed unused imports
 
 type PodcastCardProps = {
   podcast: {
@@ -10,10 +11,12 @@ type PodcastCardProps = {
     date: string
     posterImage: { url: string }
     podcastLink?: string | null
+    audioUrl?: string | null
   }
 }
 
 export default function PodcastCard({ podcast }: { podcast: PodcastCardProps['podcast'] }) {
+  const { setTrack } = usePlayer()
   // const isFree = !podcast.price || podcast.price.trim() === '0' || podcast.price.toLowerCase() === 'free'
   // const dateObj = new Date(podcast.date)
   // const dateStr = dateObj.toLocaleDateString('en-GB', {
@@ -43,22 +46,29 @@ export default function PodcastCard({ podcast }: { podcast: PodcastCardProps['po
 
       {/* --- Image --- */}
       <div className="relative aspect-[1/1] overflow-hidden w-full h-48">
-        <Link href={podcast.podcastLink || ''} target="_blank" rel="noopener noreferrer">
+        <button
+          type="button"
+          onClick={() => {
+            if (!podcast.audioUrl) return
+            setTrack({
+              title: `${podcast.artist} — ${podcast.date}`,
+              artist: podcast.artist,
+              artworkUrl: podcast.posterImage.url,
+              audioUrl: podcast.audioUrl,
+              externalLink: podcast.podcastLink || undefined,
+            })
+          }}
+          className="block w-full h-full"
+        >
           <Image
-            src={
-              podcast.posterImage.url.startsWith('http')
-                ? podcast.posterImage.url
-                : podcast.posterImage.url.startsWith('/api')
-                  ? `https://crilli-website.vercel.app${podcast.posterImage.url}`
-                  : `https://crilli-website.vercel.app/api/media/file/${podcast.posterImage.url}`
-            }
+            src={buildMediaSrc(podcast.posterImage.url)}
             alt={podcast.artist}
             fill
             className="object-cover"
             sizes="(max-width: 768px) 100vw, 400px"
             unoptimized
           />
-        </Link>
+        </button>
       </div>
 
       {/* --- Text Row --- */}
@@ -66,6 +76,8 @@ export default function PodcastCard({ podcast }: { podcast: PodcastCardProps['po
         <p className="text-sm text-crilli-200">{podcast.artist}</p>
         <p className="text-sm text-crilli-200">{podcast.date}</p>
       </div>
+
+      {/* Player is now global; no inline audio element */}
     </div>
   )
 }
