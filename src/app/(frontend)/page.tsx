@@ -10,13 +10,13 @@ import PodcastCard from '@/components/podcastCard'
 import type { Event, Media, Venue, Podcast } from '@/payload-types'
 // import { getTicketTailorEvents } from '@/lib/tickettailor'
 
-// Force dynamic rendering to avoid static generation issues during migration
-export const dynamic = 'force-dynamic'
-
 export const metadata = {
   title: 'Crilli DnB Belfast',
   description: 'Established in 2005 Crilli is a Drum & Bass + Jungle promotion based in Belfast.',
 }
+
+// Avoid prerendering DB queries at build time
+export const dynamic = 'force-dynamic'
 
 interface CombinedEvent {
   id: string
@@ -110,11 +110,13 @@ export default async function HomePage() {
 
   const podcastsForUi = cmsPodcasts.map((podcast: Podcast) => {
     const posterImage = podcast.posterImage as Media
+    const audioMedia = podcast.audioFile as Media | null
     return {
       artist: podcast.artist,
       date: podcast.number, // using `number` as display string (e.g., "2025/01")
       posterImage: { url: posterImage.url || '' },
       podcastLink: podcast.eventLink ?? null,
+      audioUrl: audioMedia?.url || null,
     }
   })
 

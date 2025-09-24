@@ -11,7 +11,7 @@ export async function GET() {
 
   try {
     const payload = await getPayload({ config })
-    
+
     // Fetch media with incorrect URLs (containing /api/media)
     const { docs } = await payload.find({
       collection: 'media',
@@ -20,34 +20,34 @@ export async function GET() {
           contains: '/api/media',
         },
       },
-      limit: 5 // Process a few at a time to avoid timeout
+      limit: 5, // Process a few at a time to avoid timeout
     })
-    
+
     const results = []
-    
+
     for (const media of docs) {
       try {
         if (!media.url) {
           results.push({
             id: media.id,
             status: 'skipped',
-            reason: 'No URL found'
+            reason: 'No URL found',
           })
           continue
         }
-        
+
         // Get the image data from the current URL
         const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL || ''}${media.url}`)
         if (!response.ok) throw new Error(`Failed to fetch image: ${response.statusText}`)
-        
+
         const buffer = await response.arrayBuffer()
         const filename = media.filename || media.url.split('/').pop() || 'untitled.jpg'
-        
+
         // Upload to Vercel Blob
-        const blob = await put(filename, new Uint8Array(buffer), {
+        const blob = await put(filename, Buffer.from(new Uint8Array(buffer)), {
           access: 'public',
         })
-        
+
         // Update the media record
         await payload.update({
           collection: 'media',
@@ -55,33 +55,38 @@ export async function GET() {
           data: {
             url: blob.url,
             filename: blob.pathname,
-          }
+          },
         })
-        
+
         results.push({
           id: media.id,
           oldUrl: media.url,
           newUrl: blob.url,
-          status: 'fixed'
+          status: 'fixed',
         })
-      } catch (error: any) {
-        console.error(`Error fixing image ${media.id}:`, error)
+      } catch (error: unknown) {
+        const err = error as { message?: string } | Error | string
+        console.error(`Error fixing image ${media.id}:`, err)
         results.push({
           id: media.id,
           url: media.url,
           status: 'error',
-          error: error?.message || String(error)
+          error: (typeof err === 'string' ? err : (err as Error)?.message) || String(err),
         })
       }
     }
-    
+
     return Response.json({
       success: true,
       processed: docs.length,
-      results
+      results,
     })
-  } catch (error: any) {
-    console.error('Error in fix-images route:', error)
-    return Response.json({ error: error?.message || String(error) }, { status: 500 })
+  } catch (error: unknown) {
+    const err = error as { message?: string } | Error | string
+    console.error('Error in fix-images route:', err)
+    return Response.json(
+      { error: (typeof err === 'string' ? err : (err as Error)?.message) || String(err) },
+      { status: 500 },
+    )
   }
-} 
+}

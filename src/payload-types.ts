@@ -261,6 +261,10 @@ export interface Podcast {
    * Upload the Podcast image - should be square
    */
   posterImage: number | Media;
+  /**
+   * Upload the podcast audio file (MP3/WAV/AAC)
+   */
+  audioFile?: (number | null) | Media;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -449,6 +453,7 @@ export interface PodcastsSelect<T extends boolean = true> {
   number?: T;
   eventLink?: T;
   posterImage?: T;
+  audioFile?: T;
   meta?:
     | T
     | {

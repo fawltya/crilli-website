@@ -44,5 +44,14 @@ export const Podcasts: CollectionConfig = {
         description: 'Upload the Podcast image - should be square',
       },
     },
+    {
+      name: 'audioFile',
+      type: 'upload',
+      relationTo: 'media',
+      required: false,
+      admin: {
+        description: 'Upload the podcast audio file (MP3/WAV/AAC)',
+      },
+    },
   ],
 }
