@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import { buildMediaSrc } from '@/lib/utils'
 import { usePlayer } from '@/components/SitePlayer'
-
+import { Play, Pause } from '@phosphor-icons/react'
 // removed unused imports
 
 type PodcastCardProps = {
@@ -80,28 +80,14 @@ export default function PodcastCard({ podcast }: { podcast: PodcastCardProps['po
           {/* Always visible pause icon when playing */}
           {showPlayControls && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-md backdrop-opacity-30 z-10">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="w-16 h-16 text-white drop-shadow-lg"
-              >
-                <path d="M6 5h4v14H6zM14 5h4v14h-4z" />
-              </svg>
+              <Pause className="w-16 h-16 text-white drop-shadow-lg" weight="fill" />
             </div>
           )}
 
           {/* Hover play icon overlay (only show when not playing) */}
           {!showPlayControls && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-md backdrop-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="w-16 h-16 text-white drop-shadow-lg"
-              >
-                <path d="M8 5v14l11-7z" />
-              </svg>
+              <Play className="w-16 h-16 text-white drop-shadow-lg" weight="fill" />
             </div>
           )}
         </button>

@@ -30,6 +30,9 @@ const nextConfig = {
       { protocol: 'https', hostname: 'crilli-website.vercel.app', pathname: '/**' },
     ],
   },
+  experimental: {
+    optimizePackageImports: ['@phosphor-icons/react'],
+  },
 }
 
 export default withPayload(nextConfig, { devBundleServerPackages: false })

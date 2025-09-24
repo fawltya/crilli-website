@@ -39,19 +39,34 @@ export default function ScrollButton({ containerId }: { containerId: string }) {
   }
 
   return (
-    <div className="flex flex-row gap-4 self-end">
+    <div className="flex flex-row gap-3 self-end">
       {/* Left Scroll Button */}
       {canScrollLeft && (
         <button
           onClick={scrollLeft}
-          className="self-end left-4 top-1/2 -translate-y-1/2 hover:bg-crilli-800/80 border border-px border-crilli-600/20 backdrop-blur-lg  rounded-full p-1 transition-all duration-300 z-10"
+          className="relative overflow-hidden backdrop-blur-lg p-2 transition-all duration-300 z-10 group"
           aria-label="Scroll left"
         >
+          {/* Corner Border Overlay */}
+          <div className="pointer-events-none absolute inset-0">
+            {/* top-left */}
+            <span className="absolute left-1 top-1 h-px w-2 bg-crilli-600 group-hover:bg-crilli-400 transition-colors duration-300" />
+            <span className="absolute left-1 top-1 h-2 w-px bg-crilli-600 group-hover:bg-crilli-400 transition-colors duration-300" />
+            {/* top-right */}
+            <span className="absolute right-1 top-1 h-px w-2 bg-crilli-600 group-hover:bg-crilli-400 transition-colors duration-300" />
+            <span className="absolute right-1 top-1 h-2 w-px bg-crilli-600 group-hover:bg-crilli-400 transition-colors duration-300" />
+            {/* bottom-left */}
+            <span className="absolute bottom-1 left-1 h-px w-2 bg-crilli-600 group-hover:bg-crilli-400 transition-colors duration-300" />
+            <span className="absolute bottom-1 left-1 h-2 w-px bg-crilli-600 group-hover:bg-crilli-400 transition-colors duration-300" />
+            {/* bottom-right */}
+            <span className="absolute bottom-1 right-1 h-px w-2 bg-crilli-600 group-hover:bg-crilli-400 transition-colors duration-300" />
+            <span className="absolute bottom-1 right-1 h-2 w-px bg-crilli-600 group-hover:bg-crilli-400 transition-colors duration-300" />
+          </div>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
-            className="w-6 h-6 text-crilli-200"
+            className="w-6 h-6 text-crilli-200 relative z-10"
           >
             <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" />
           </svg>
@@ -62,14 +77,29 @@ export default function ScrollButton({ containerId }: { containerId: string }) {
       {canScrollRight && (
         <button
           onClick={scrollRight}
-          className="self-end left-4 top-1/2 -translate-y-1/2 hover:bg-crilli-800/80 border border-px border-crilli-600/20 backdrop-blur-lg  rounded-full p-1 transition-all duration-300 z-10"
+          className="relative overflow-hidden backdrop-blur-lg p-2 transition-all duration-300 z-10 group"
           aria-label="Scroll right"
         >
+          {/* Corner Border Overlay */}
+          <div className="pointer-events-none absolute inset-0">
+            {/* top-left */}
+            <span className="absolute left-1 top-1 h-px w-2 bg-crilli-600 group-hover:bg-crilli-400 transition-colors duration-300" />
+            <span className="absolute left-1 top-1 h-2 w-px bg-crilli-600 group-hover:bg-crilli-400 transition-colors duration-300" />
+            {/* top-right */}
+            <span className="absolute right-1 top-1 h-px w-2 bg-crilli-600 group-hover:bg-crilli-400 transition-colors duration-300" />
+            <span className="absolute right-1 top-1 h-2 w-px bg-crilli-600 group-hover:bg-crilli-400 transition-colors duration-300" />
+            {/* bottom-left */}
+            <span className="absolute bottom-1 left-1 h-px w-2 bg-crilli-600 group-hover:bg-crilli-400 transition-colors duration-300" />
+            <span className="absolute bottom-1 left-1 h-2 w-px bg-crilli-600 group-hover:bg-crilli-400 transition-colors duration-300" />
+            {/* bottom-right */}
+            <span className="absolute bottom-1 right-1 h-px w-2 bg-crilli-600 group-hover:bg-crilli-400 transition-colors duration-300" />
+            <span className="absolute bottom-1 right-1 h-2 w-px bg-crilli-600 group-hover:bg-crilli-400 transition-colors duration-300" />
+          </div>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
-            className="w-6 h-6 text-crilli-200"
+            className="w-6 h-6 text-crilli-200 relative z-10"
           >
             <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
           </svg>
