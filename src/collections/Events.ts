@@ -29,17 +29,15 @@ export const Events: CollectionConfig = {
     {
       name: 'startTime',
       type: 'text',
-      required: true,
       admin: {
-        description: 'Enter the start time in 24hr (e.g., "22:00")',
+        description: 'Enter the start time in 24hr format (e.g., "22:00") - Optional',
       },
     },
     {
       name: 'endTime',
       type: 'text',
-      required: true,
       admin: {
-        description: 'Enter the end time in 24hr (e.g., "03:00")',
+        description: 'Enter the end time in 24hr format (e.g., "03:00") - Optional',
       },
     },
     {

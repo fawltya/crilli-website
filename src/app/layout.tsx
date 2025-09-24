@@ -7,8 +7,8 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={sometypeMono?.variable}>
-      <body>{children}</body>
+    <html lang="en" className={sometypeMono.variable}>
+      <body className={sometypeMono.className}>{children}</body>
     </html>
   )
 }
