@@ -106,7 +106,7 @@ export default async function PreviousEventsPage() {
             Past Events
           </h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 gap-y-15 auto-rows-fr justify-items-start">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 gap-y-15 auto-rows-fr md:justify-items-start justify-items-center">
           {pastEvents.length > 0 ? (
             pastEvents.map((event) => (
               <EventCard key={`${event.source}-${event.id}`} event={event} isPastEvent={true} />

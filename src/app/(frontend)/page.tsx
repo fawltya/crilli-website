@@ -168,7 +168,7 @@ export default async function HomePage() {
             Upcoming Events
           </h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 gap-y-15 auto-rows-fr justify-items-start">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 gap-y-15 auto-rows-fr md:justify-items-start justify-items-center">
           {upcomingEvents.length > 0 ? (
             upcomingEvents.map((event) => (
               <EventCard key={`${event.source}-${event.id}`} event={event} />
