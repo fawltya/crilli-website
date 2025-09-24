@@ -19,6 +19,7 @@ export function buildMediaSrc(value: string | null | undefined): string {
 export type PodcastPlayable = {
   title: string
   artist: string
+  date?: string
   artworkUrl?: string | null
   audioUrl: string
   externalLink?: string | null

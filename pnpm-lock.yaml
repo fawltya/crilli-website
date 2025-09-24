@@ -32,18 +32,27 @@ importers:
       '@payloadcms/storage-vercel-blob':
         specifier: ^3.56.0
         version: 3.56.0(@types/react@19.1.0)(monaco-editor@0.52.2)(next@15.3.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4))(payload@3.56.0(bufferutil@4.0.9)(graphql@16.11.0)(typescript@5.7.3)(utf-8-validate@6.0.5))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.7.3)
+      '@phosphor-icons/react':
+        specifier: ^2.1.10
+        version: 2.1.10(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-separator':
         specifier: ^1.1.4
         version: 1.1.6(@types/react-dom@19.1.2(@types/react@19.1.0))(@types/react@19.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-slot':
         specifier: ^1.2.0
         version: 1.2.2(@types/react@19.1.0)(react@19.1.0)
+      '@types/react-google-recaptcha':
+        specifier: ^2.1.9
+        version: 2.1.9
       '@vercel/analytics':
         specifier: ^1.5.0
         version: 1.5.0(next@15.3.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4))(react@19.1.0)
       '@vercel/blob':
         specifier: ^1.0.1
         version: 1.0.1
+      '@vercel/speed-insights':
+        specifier: ^1.2.0
+        version: 1.2.0(next@15.3.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4))(react@19.1.0)
       axios:
         specifier: ^1.9.0
         version: 1.9.0
@@ -62,9 +71,6 @@ importers:
       graphql:
         specifier: ^16.8.1
         version: 16.11.0
-      lucide-react:
-        specifier: ^0.503.0
-        version: 0.503.0(react@19.1.0)
       next:
         specifier: 15.3.0
         version: 15.3.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4)
@@ -80,6 +86,9 @@ importers:
       react-dom:
         specifier: 19.1.0
         version: 19.1.0(react@19.1.0)
+      react-google-recaptcha:
+        specifier: ^3.1.0
+        version: 3.1.0(react@19.1.0)
       sharp:
         specifier: 0.32.6
         version: 0.32.6
@@ -1184,6 +1193,13 @@ packages:
       react: ^19.0.0 || ^19.0.0-rc-65a56d0e-20241020
       react-dom: ^19.0.0 || ^19.0.0-rc-65a56d0e-20241020
 
+  '@phosphor-icons/react@2.1.10':
+    resolution: {integrity: sha512-vt8Tvq8GLjheAZZYa+YG/pW7HDbov8El/MANW8pOAz4eGxrwhnbfrQZq0Cp4q8zBEu8NIhHdnr+r8thnfRSNYA==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>= 16.8'
+      react-dom: '>= 16.8'
+
   '@radix-ui/react-compose-refs@1.1.2':
     resolution: {integrity: sha512-z4eqJvfiNnFMHIIvXP3CY57y2WJs5g2v3X0zm9mEJkrkNv4rDxu+sg9Jh8EkXyeqBkB7SOcboo9dMVqhyrACIg==}
     peerDependencies:
@@ -1436,6 +1452,9 @@ packages:
     peerDependencies:
       '@types/react': ^19.0.0
 
+  '@types/react-google-recaptcha@2.1.9':
+    resolution: {integrity: sha512-nT31LrBDuoSZJN4QuwtQSF3O89FVHC4jLhM+NtKEmVF5R1e8OY0Jo4//x2Yapn2aNHguwgX5doAq8Zo+Ehd0ug==}
+
   '@types/react-transition-group@4.4.12':
     resolution: {integrity: sha512-8TV6R3h2j7a91c+1DXdJi3Syo69zzIZbz7Lg5tORM5LEJG7X/E6a1V3drRyBRZq7/utz7A+c4OgYLiLcYGHG6w==}
     peerDependencies:
@@ -1628,6 +1647,29 @@ packages:
   '@vercel/postgres@0.9.0':
     resolution: {integrity: sha512-WiI2g3+ce2g1u1gP41MoDj2DsMuQQ+us7vHobysRixKECGaLHpfTI7DuVZmHU087ozRAGr3GocSyqmWLLo+fig==}
     engines: {node: '>=14.6'}
+
+  '@vercel/speed-insights@1.2.0':
+    resolution: {integrity: sha512-y9GVzrUJ2xmgtQlzFP2KhVRoCglwfRQgjyfY607aU0hh0Un6d0OUyrJkjuAlsV18qR4zfoFPs/BiIj9YDS6Wzw==}
+    peerDependencies:
+      '@sveltejs/kit': ^1 || ^2
+      next: '>= 13'
+      react: ^18 || ^19 || ^19.0.0-rc
+      svelte: '>= 4'
+      vue: ^3
+      vue-router: ^4
+    peerDependenciesMeta:
+      '@sveltejs/kit':
+        optional: true
+      next:
+        optional: true
+      react:
+        optional: true
+      svelte:
+        optional: true
+      vue:
+        optional: true
+      vue-router:
+        optional: true
 
   '@webassemblyjs/ast@1.14.1':
     resolution: {integrity: sha512-nuBEDgQfm1ccRp/8bCQrx1frohyufl4JlbMMZ4P1wpeOfDhF6FQkxZJ1b/e+PLwr6X1Nhw6OLme5usuBWYBvuQ==}
@@ -3126,11 +3168,6 @@ packages:
     resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
     hasBin: true
 
-  lucide-react@0.503.0:
-    resolution: {integrity: sha512-HGGkdlPWQ0vTF8jJ5TdIqhQXZi6uh3LnNgfZ8MHiuxFfX3RZeA79r2MW2tHAZKlAVfoNE8esm3p+O6VkIvpj6w==}
-    peerDependencies:
-      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
-
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
     engines: {node: '>= 0.4'}
@@ -3733,6 +3770,11 @@ packages:
     resolution: {integrity: sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw==}
     hasBin: true
 
+  react-async-script@1.2.0:
+    resolution: {integrity: sha512-bCpkbm9JiAuMGhkqoAiC0lLkb40DJ0HOEJIku+9JDjxX3Rcs+ztEOG13wbrOskt3n2DTrjshhaQ/iay+SnGg5Q==}
+    peerDependencies:
+      react: '>=16.4.1'
+
   react-datepicker@7.6.0:
     resolution: {integrity: sha512-9cQH6Z/qa4LrGhzdc3XoHbhrxNcMi9MKjZmYgF/1MNNaJwvdSjv3Xd+jjvrEEbKEf71ZgCA3n7fQbdwd70qCRw==}
     peerDependencies:
@@ -3754,6 +3796,11 @@ packages:
     resolution: {integrity: sha512-GQDxZ5Jd+Aq/qUxbCm1UtzmL/s++V7zKgE8yMktJiCQXCCFZnMZh9ng+6/Ne6PjNSXH0L9CjeOEREfRnq6Duag==}
     peerDependencies:
       react: '>=16.13.1'
+
+  react-google-recaptcha@3.1.0:
+    resolution: {integrity: sha512-cYW2/DWas8nEKZGD7SCu9BSuVz8iOcOLHChHyi7upUuVhkpkhYG/6N3KDiTQ3XAiZ2UAZkfvYKMfAHOzBOcGEg==}
+    peerDependencies:
+      react: '>=16.4.1'
 
   react-image-crop@10.1.8:
     resolution: {integrity: sha512-4rb8XtXNx7ZaOZarKKnckgz4xLMvds/YrU6mpJfGhGAsy2Mg4mIw1x+DCCGngVGq2soTBVVOxx2s/C6mTX9+pA==}
@@ -5559,6 +5606,11 @@ snapshots:
       - supports-color
       - typescript
 
+  '@phosphor-icons/react@2.1.10(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+    dependencies:
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
+
   '@radix-ui/react-compose-refs@1.1.2(@types/react@19.1.0)(react@19.1.0)':
     dependencies:
       react: 19.1.0
@@ -5794,6 +5846,10 @@ snapshots:
     dependencies:
       '@types/react': 19.1.0
 
+  '@types/react-google-recaptcha@2.1.9':
+    dependencies:
+      '@types/react': 19.1.0
+
   '@types/react-transition-group@4.4.12(@types/react@19.1.0)':
     dependencies:
       '@types/react': 19.1.0
@@ -5970,6 +6026,11 @@ snapshots:
       bufferutil: 4.0.9
       utf-8-validate: 6.0.5
       ws: 8.18.2(bufferutil@4.0.9)(utf-8-validate@6.0.5)
+
+  '@vercel/speed-insights@1.2.0(next@15.3.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4))(react@19.1.0)':
+    optionalDependencies:
+      next: 15.3.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4)
+      react: 19.1.0
 
   '@webassemblyjs/ast@1.14.1':
     dependencies:
@@ -7611,10 +7672,6 @@ snapshots:
     dependencies:
       js-tokens: 4.0.0
 
-  lucide-react@0.503.0(react@19.1.0):
-    dependencies:
-      react: 19.1.0
-
   math-intrinsics@1.1.0: {}
 
   md5@2.3.0:
@@ -8370,6 +8427,12 @@ snapshots:
       minimist: 1.2.8
       strip-json-comments: 2.0.1
 
+  react-async-script@1.2.0(react@19.1.0):
+    dependencies:
+      hoist-non-react-statics: 3.3.2
+      prop-types: 15.8.1
+      react: 19.1.0
+
   react-datepicker@7.6.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
       '@floating-ui/react': 0.27.8(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -8392,6 +8455,12 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.27.1
       react: 19.1.0
+
+  react-google-recaptcha@3.1.0(react@19.1.0):
+    dependencies:
+      prop-types: 15.8.1
+      react: 19.1.0
+      react-async-script: 1.2.0(react@19.1.0)
 
   react-image-crop@10.1.8(react@19.1.0):
     dependencies:

@@ -1,6 +1,8 @@
 'use client'
 import React from 'react'
 import { buildMediaSrc, type PodcastPlayable } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 type PlayerContextType = {
   current?: PodcastPlayable | null
@@ -8,6 +10,7 @@ type PlayerContextType = {
   setTrack: (track: PodcastPlayable) => void
   togglePlay: () => void
   pause: () => void
+  isCurrentTrack: (audioUrl: string) => boolean
 }
 
 export const PlayerContext = React.createContext<PlayerContextType | undefined>(undefined)
@@ -55,6 +58,13 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     setIsPlaying(false)
   }, [])
 
+  const isCurrentTrack = React.useCallback(
+    (audioUrl: string) => {
+      return current?.audioUrl === audioUrl
+    },
+    [current],
+  )
+
   // Bind audio element events for time/duration and play/pause sync
   React.useEffect(() => {
     const audio = audioRef.current
@@ -88,8 +98,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   }
 
   const value = React.useMemo(
-    () => ({ current, isPlaying, setTrack, togglePlay, pause }),
-    [current, isPlaying, setTrack, togglePlay, pause],
+    () => ({ current, isPlaying, setTrack, togglePlay, pause, isCurrentTrack }),
+    [current, isPlaying, setTrack, togglePlay, pause, isCurrentTrack],
   )
 
   return (
@@ -99,47 +109,52 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       <div className="fixed bottom-0 left-0 right-0 z-50">
         <audio ref={audioRef} className="hidden" preload="none" />
         {current ? (
-          <div className="bg-crilli-800/60 supports-[backdrop-filter]:bg-crilli-800/50 backdrop-blur-md border-t border-crilli-600/50 text-crilli-50 px-4 py-3 font-main uppercase shadow-lg rounded-t-md">
-            <div className="max-w-7xl mx-auto flex items-center gap-4">
-              {current.artworkUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={buildMediaSrc(current.artworkUrl)}
-                  alt={current.title}
-                  className="w-12 h-12 object-cover rounded-sm"
-                />
-              ) : null}
-              <div className="flex-1 overflow-hidden">
-                <p className="text-sm text-crilli-200 truncate">{current.artist}</p>
-                <p className="text-sm truncate">{current.title}</p>
+          <div className="bg-crilli-800/60 supports-[backdrop-filter]:bg-crilli-800/50 backdrop-blur-md border-t border-crilli-600/30 text-crilli-50 px-4 py-3 font-main uppercase shadow-lg w-full">
+            <div className="flex flex-row gap-6 md:items-center items-end">
+              <div className="max-w-7xl mx-auto flex  items-center gap-4">
+                {current.artworkUrl ? (
+                  <div className="relative w-16 h-16 group">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={buildMediaSrc(current.artworkUrl)}
+                      alt={current.title}
+                      className="w-16 h-16 object-cover"
+                    />
+                    {/* Play/Pause overlay button */}
+                    <button
+                      onClick={togglePlay}
+                      aria-label={isPlaying ? 'Pause' : 'Play'}
+                      className={`absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-md backdrop-opacity-30 ${isPlaying ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity duration-200 rounded-sm`}
+                    >
+                      {isPlaying ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          className="w-8 h-8 text-white drop-shadow-lg"
+                        >
+                          <path d="M6 5h4v14H6zM14 5h4v14h-4z" />
+                        </svg>
+                      ) : (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          className="w-8 h-8 text-white drop-shadow-lg"
+                        >
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
+                ) : null}
               </div>
-              <div className="flex items-center gap-4 w-full max-w-3xl">
-                <button
-                  onClick={togglePlay}
-                  aria-label={isPlaying ? 'Pause' : 'Play'}
-                  className="p-2 border border-crilli-400 text-crilli-50 hover:bg-crilli-700 rounded-sm"
-                >
-                  {isPlaying ? (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="w-5 h-5"
-                    >
-                      <path d="M6 5h4v14H6zM14 5h4v14h-4z" />
-                    </svg>
-                  ) : (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="w-5 h-5"
-                    >
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  )}
-                </button>
-                <div className="flex items-center gap-3 flex-1 select-none">
+              <div className="flex gap-2 flex-1 flex-col md:flex-row w-full">
+                <div className=" max-content">
+                  <p className="text-lg leading-tight">Crilli Podcast - {current.artist}</p>
+                  <p className="text-sm text-crilli-200 truncate">{current.date}</p>
+                </div>
+                <div className="flex gap-1 flex-1 select-none justify-center align-middle items-center md:ml-0 -ml-3">
                   <span className="text-xs text-crilli-200 w-10 text-right">
                     {formatTime(currentTime)}
                   </span>
@@ -183,15 +198,14 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                   />
                   <span className="text-xs text-crilli-200 w-10">{formatTime(duration)}</span>
                 </div>
+              </div>
+              <div className=" gap-4 flex-col md:flex-row hidden md:flex">
                 {current.externalLink ? (
-                  <a
-                    href={current.externalLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-2 border border-crilli-400 text-crilli-50 hover:bg-crilli-700"
-                  >
-                    Listen on SoundCloud
-                  </a>
+                  <Button variant="outline" asChild>
+                    <Link href={current.externalLink} target="_blank" rel="noopener noreferrer">
+                      SoundCloud
+                    </Link>
+                  </Button>
                 ) : null}
               </div>
             </div>
