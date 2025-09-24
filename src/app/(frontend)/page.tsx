@@ -15,6 +15,9 @@ export const metadata = {
   description: 'Established in 2005 Crilli is a Drum & Bass + Jungle promotion based in Belfast.',
 }
 
+// Avoid prerendering DB queries at build time
+export const dynamic = 'force-dynamic'
+
 interface CombinedEvent {
   id: string
   title: string
