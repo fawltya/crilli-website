@@ -10,7 +10,7 @@ import ScrollButton from '@/components/ScrollButton'
 import type { Event, Media, Venue, Podcast } from '@/payload-types'
 import { Button } from '@/components/ui/button'
 import Footer from '@/components/Footer'
-// import { getTicketTailorEvents } from '@/lib/tickettailor'
+import { buildMediaSrc } from '@/lib/utils'
 
 export const metadata = {
   title: 'Crilli DnB Belfast',
@@ -144,7 +144,7 @@ export default async function HomePage() {
       <div className="container mx-auto max-w-7xl">
         <div className="relative flex items-center justify-center flex-col ">
           <Image
-            src="/api/media/file/Crilli%20Logo%20est%20belf.png"
+            src={buildMediaSrc('/api/media/file/Crilli%20Logo%20est%20belf.png')}
             alt="Crilli DnB Belfast Logo"
             width={400}
             height={300}
@@ -187,7 +187,7 @@ export default async function HomePage() {
         </div>
         <div className="mt-16 w-full ">
           <Image
-            src="/api/media/file/Crilli%20DnB%20-%20Kev.jpg"
+            src={buildMediaSrc('/api/media/file/Crilli%20DnB%20-%20Kev.jpg')}
             alt="Crilli DnB promotional image"
             className="rounded-sm overflow-hidden"
             width={1200}

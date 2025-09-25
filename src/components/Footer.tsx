@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Separator } from '@/components/ui/separator'
 import IconWrapper from '@/components/IconWrapper'
 import SubscriptionForm from '@/components/SubscriptionForm'
+import { buildMediaSrc } from '@/lib/utils'
 
 interface FooterProps {
   showSubscriptionForm?: boolean
@@ -24,7 +25,7 @@ export default function Footer({
       {/* Footer */}
       <div className="mt-16 w-full flex md:flex-row flex-col justify-between align-bottom md:gap-4 gap-10 items-center md:items-start">
         <Image
-          src="/api/media/file/Crilli%20Logo%20est%20belf.png"
+          src={buildMediaSrc('/api/media/file/Crilli%20Logo%20est%20belf.png')}
           alt="Crilli DnB Belfast Logo"
           width={200}
           height={300}

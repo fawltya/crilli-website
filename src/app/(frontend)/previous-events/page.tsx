@@ -8,6 +8,7 @@ import EventCard from '@/components/eventCard'
 import { Button } from '@/components/ui/button'
 import Footer from '@/components/Footer'
 import type { Event, Media, Venue } from '@/payload-types'
+import { buildMediaSrc } from '@/lib/utils'
 
 export const metadata = {
   title: 'Previous Events - Crilli DnB Belfast',
@@ -80,7 +81,7 @@ export default async function PreviousEventsPage() {
         {/* Header */}
         <div className="relative flex items-center justify-center flex-col mb-16">
           <Image
-            src="/api/media/file/Crilli%20Logo%20est%20belf.png"
+            src={buildMediaSrc('/api/media/file/Crilli%20Logo%20est%20belf.png')}
             alt="Crilli DnB Belfast Logo"
             width={300}
             height={225}
