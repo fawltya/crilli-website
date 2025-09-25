@@ -73,6 +73,7 @@ export default async function PreviousEventsPage() {
   const pastEvents = sortedEvents.filter((event) => {
     const eventDate = new Date(event.date)
     eventDate.setHours(0, 0, 0, 0)
+    return eventDate < today
   })
 
   return (
