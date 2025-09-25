@@ -1,8 +1,7 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { Button } from './ui/button'
-import ReCAPTCHA from 'react-google-recaptcha'
 
 export default function SubscriptionForm() {
   const [email, setEmail] = useState('')
@@ -10,12 +9,7 @@ export default function SubscriptionForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [isSuccess, setIsSuccess] = useState(false)
-  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null)
-  const recaptchaRef = useRef<ReCAPTCHA>(null)
   const [formStartTime] = useState(() => Date.now()) // Set timestamp when component mounts
-
-  // Debug: Check if site key is loaded
-  console.log('reCAPTCHA site key:', process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -25,27 +19,6 @@ export default function SubscriptionForm() {
     // Check honeypot - if filled, it's likely a bot
     if (honeypot) {
       console.log('Bot detected via honeypot')
-      setIsSubmitting(false)
-      return
-    }
-
-    // Execute invisible reCAPTCHA
-    let token: string | null = null
-    if (recaptchaRef.current) {
-      try {
-        token = await recaptchaRef.current.executeAsync()
-        setRecaptchaToken(token)
-      } catch (error) {
-        console.error('reCAPTCHA execution failed:', error)
-        setMessage('reCAPTCHA verification failed. Please try again.')
-        setIsSubmitting(false)
-        return
-      }
-    }
-
-    // Check reCAPTCHA token
-    if (!token) {
-      setMessage('reCAPTCHA verification failed. Please try again.')
       setIsSubmitting(false)
       return
     }
@@ -60,7 +33,6 @@ export default function SubscriptionForm() {
           email,
           honeypot, // Send honeypot value for server-side validation
           timestamp: formStartTime, // Add timestamp for rate limiting
-          recaptchaToken: token, // Send reCAPTCHA token
         }),
       })
 
@@ -76,8 +48,6 @@ export default function SubscriptionForm() {
           setMessage('Successfully subscribed! Thank you for joining our mailing list.')
         }
         setEmail('')
-        setRecaptchaToken(null)
-        recaptchaRef.current?.reset()
       } else {
         setIsSuccess(false)
 
@@ -90,7 +60,7 @@ export default function SubscriptionForm() {
           setMessage(data.error || 'Something went wrong. Please try again.')
         }
       }
-    } catch (error) {
+    } catch (_error) {
       setIsSuccess(false)
       setMessage('Network error. Please check your connection and try again.')
     } finally {
@@ -138,19 +108,6 @@ export default function SubscriptionForm() {
         >
           {isSubmitting ? 'Subscribing...' : 'Subscribe'}
         </Button>
-
-        {/* Invisible reCAPTCHA - executes automatically on form submit */}
-        <ReCAPTCHA
-          ref={recaptchaRef}
-          sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
-          onChange={(token) => setRecaptchaToken(token)}
-          onExpired={() => setRecaptchaToken(null)}
-          onError={(error) => {
-            console.error('reCAPTCHA error:', error)
-            setRecaptchaToken(null)
-          }}
-          size="invisible"
-        />
       </form>
 
       {message && (

@@ -5,7 +5,7 @@ const rateLimitMap = new Map<string, { count: number; resetTime: number }>()
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, honeypot, timestamp, recaptchaToken } = await request.json()
+    const { email, honeypot, timestamp } = await request.json()
     const clientIP =
       request.headers.get('x-forwarded-for') ||
       request.headers.get('x-real-ip') ||
@@ -55,46 +55,6 @@ export async function POST(request: NextRequest) {
         { error: 'Please wait a moment before submitting.' },
         { status: 400 },
       )
-    }
-
-    // Validate reCAPTCHA token
-    if (recaptchaToken) {
-      const recaptchaSecret = process.env.RECAPTCHA_SECRET_KEY
-      console.log('reCAPTCHA validation attempt:', {
-        hasToken: !!recaptchaToken,
-        hasSecret: !!recaptchaSecret,
-        clientIP,
-        tokenLength: recaptchaToken.length,
-      })
-
-      if (recaptchaSecret) {
-        try {
-          const recaptchaResponse = await fetch('https://www.google.com/recaptcha/api/siteverify', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `secret=${recaptchaSecret}&response=${recaptchaToken}&remoteip=${clientIP}`,
-          })
-
-          const recaptchaData = await recaptchaResponse.json()
-          console.log('reCAPTCHA response:', recaptchaData)
-
-          if (!recaptchaData.success) {
-            console.log('reCAPTCHA validation failed:', { email, clientIP, recaptchaData })
-            return NextResponse.json(
-              { error: 'reCAPTCHA verification failed. Please try again.' },
-              { status: 400 },
-            )
-          }
-        } catch (recaptchaError) {
-          console.error('reCAPTCHA verification error:', recaptchaError)
-          return NextResponse.json(
-            { error: 'reCAPTCHA verification failed. Please try again.' },
-            { status: 400 },
-          )
-        }
-      }
     }
 
     if (!email) {
