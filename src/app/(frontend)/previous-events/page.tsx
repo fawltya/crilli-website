@@ -38,6 +38,7 @@ export default async function PreviousEventsPage() {
   const { docs: cmsEvents } = await payload.find({
     collection: 'events',
     depth: 2,
+    limit: 1000, // High limit to fetch all events
   })
 
   // Combine and transform events - leaving incase bring TicketTailor back in

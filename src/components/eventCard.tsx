@@ -42,7 +42,12 @@ export default function EventCard({ event, isPastEvent = false }: EventCardProps
             blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
           />
         ) : (
-          <Link href={event.eventLink || ''} target="_blank" rel="noopener noreferrer">
+          <Link
+            href={event.eventLink || ''}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`View details for ${event.title} event`}
+          >
             <Image
               src={buildMediaSrc(event.posterImage.url)}
               alt={`${event.title} event poster`}
@@ -58,7 +63,7 @@ export default function EventCard({ event, isPastEvent = false }: EventCardProps
       </div>
 
       {isPastEvent ? (
-        // Past event layout - full width, no divider, date below title
+        // Past event layout
         <div className="py-6 px-2 flex flex-col gap-2">
           <h2 className="text-lg leading-5 font-bold text-crilli-50 pb-1 line-clamp-2">
             {event.title}
@@ -71,7 +76,7 @@ export default function EventCard({ event, isPastEvent = false }: EventCardProps
           </div>
         </div>
       ) : (
-        // Upcoming event layout - original design
+        // Upcoming event layout
         <div className="py-6 px-2 flex flex-row gap-4 justify-between flex-grow">
           <div className="w-full flex flex-col justify-between">
             <h2 className="text-lg leading-5 font-bold text-crilli-50 pb-1 line-clamp-2">

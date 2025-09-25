@@ -57,19 +57,44 @@ export default function Footer({
             </>
           )}
           <div className="flex gap-4 md:justify-end justify-center">
-            <Link href="https://www.instagram.com/crillidnb/" target="_blank">
+            <Link
+              href="https://www.instagram.com/crillidnb/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Follow Crilli on Instagram"
+            >
               <IconWrapper iconName="InstagramLogo" size={22} weight="light" />
             </Link>
-            <Link href="https://www.facebook.com/CrilliDnB" target="_blank">
+            <Link
+              href="https://www.facebook.com/CrilliDnB"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Follow Crilli on Facebook"
+            >
               <IconWrapper iconName="FacebookLogo" size={22} weight="light" />
             </Link>
-            <Link href="https://www.soundcloud.com/Crillidnb" target="_blank">
+            <Link
+              href="https://www.soundcloud.com/Crillidnb"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Listen to Crilli Podcasts on SoundCloud"
+            >
               <IconWrapper iconName="SoundcloudLogo" size={22} weight="light" />
             </Link>
-            <Link href="https://open.spotify.com/user/1116081744" target="_blank">
+            <Link
+              href="https://open.spotify.com/user/1116081744"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Listen to Crilli Playlists on Spotify"
+            >
               <IconWrapper iconName="SpotifyLogo" size={22} weight="light" />
             </Link>
-            <Link href="https://www.youtube.com/channel/UCJI-M_xV5N_LUe22QBmPPTg" target="_blank">
+            <Link
+              href="https://www.youtube.com/channel/UCJI-M_xV5N_LUe22QBmPPTg"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Follow Crilli on YouTube"
+            >
               <IconWrapper iconName="YoutubeLogo" size={22} weight="light" />
             </Link>
           </div>
