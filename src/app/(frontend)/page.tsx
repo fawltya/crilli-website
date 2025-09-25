@@ -10,7 +10,7 @@ import ScrollButton from '@/components/ScrollButton'
 import type { Event, Media, Venue, Podcast } from '@/payload-types'
 import { Button } from '@/components/ui/button'
 import Footer from '@/components/Footer'
-// import { getTicketTailorEvents } from '@/lib/tickettailor'
+import { buildMediaSrc } from '@/lib/utils'
 
 export const metadata = {
   title: 'Crilli DnB Belfast',
@@ -39,7 +39,7 @@ export default async function HomePage() {
   // Fetch CMS events
   const { docs: cmsEvents } = await payload.find({
     collection: 'events',
-    depth: 2, // This ensures we get the related venue and posterImage data
+    depth: 2,
   })
 
   // Fetch Ticket Tailor events
@@ -105,11 +105,11 @@ export default async function HomePage() {
 
   // Filter events to only show today or future events
   const today = new Date()
-  today.setHours(0, 0, 0, 0) // Set to start of today
+  today.setHours(0, 0, 0, 0)
 
   const upcomingEvents = sortedEvents.filter((event) => {
     const eventDate = new Date(event.date)
-    eventDate.setHours(0, 0, 0, 0) // Set to start of event day
+    eventDate.setHours(0, 0, 0, 0)
     return eventDate >= today
   })
 
@@ -125,18 +125,17 @@ export default async function HomePage() {
     const audioMedia = podcast.audioFile as Media | null
     return {
       artist: podcast.artist,
-      date: podcast.number, // using `number` as display string (e.g., "2025/01")
+      date: podcast.number,
       posterImage: { url: posterImage.url || '' },
       podcastLink: podcast.eventLink ?? null,
       audioUrl: audioMedia?.url || null,
     }
   })
 
-  // Sort podcasts by number field (which contains episode numbers like "2025/01")
   const sortedPodcasts = podcastsForUi.sort((a, b) => {
     // Convert "2025/01" format to numeric values for proper sorting
-    const numA = parseInt(a.date.replace('/', '')) // "2025/01" -> 202501
-    const numB = parseInt(b.date.replace('/', '')) // "2023/02" -> 202302
+    const numA = parseInt(a.date.replace('/', ''))
+    const numB = parseInt(b.date.replace('/', ''))
     return numB - numA // Sort descending (newest first)
   })
 
@@ -145,7 +144,7 @@ export default async function HomePage() {
       <div className="container mx-auto max-w-7xl">
         <div className="relative flex items-center justify-center flex-col ">
           <Image
-            src="https://jfkf0uemou6lrnps.public.blob.vercel-storage.com/Crilli%20Logo%20est%20belf.png"
+            src={buildMediaSrc('/api/media/file/Crilli%20Logo%20est%20belf.png')}
             alt="Crilli DnB Belfast Logo"
             width={400}
             height={300}
@@ -163,6 +162,7 @@ export default async function HomePage() {
             </p>
           </div>
         </div>
+        {/* Events */}
         <div id="events">
           <h2 className="text-crilli-50  mt-20 mb-6 text-xl font-semibold md:text-left text-center">
             Upcoming Events
@@ -187,7 +187,7 @@ export default async function HomePage() {
         </div>
         <div className="mt-16 w-full ">
           <Image
-            src="/api/media/file/Crilli%20DnB%20-%20Kev.jpg"
+            src={buildMediaSrc('/api/media/file/Crilli%20DnB%20-%20Kev.jpg')}
             alt="Crilli DnB promotional image"
             className="rounded-sm overflow-hidden"
             width={1200}
@@ -195,6 +195,7 @@ export default async function HomePage() {
             priority
           />
         </div>
+        {/* Podcasts */}
         <div id="podcasts">
           <h2 className="text-crilli-50 mt-20 mb-4 text-xl font-semibold md:text-left text-center">
             Latest Podcasts

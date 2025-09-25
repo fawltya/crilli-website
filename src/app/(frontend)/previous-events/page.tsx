@@ -8,6 +8,7 @@ import EventCard from '@/components/eventCard'
 import { Button } from '@/components/ui/button'
 import Footer from '@/components/Footer'
 import type { Event, Media, Venue } from '@/payload-types'
+import { buildMediaSrc } from '@/lib/utils'
 
 export const metadata = {
   title: 'Previous Events - Crilli DnB Belfast',
@@ -35,10 +36,10 @@ export default async function PreviousEventsPage() {
   // Fetch CMS events
   const { docs: cmsEvents } = await payload.find({
     collection: 'events',
-    depth: 2, // This ensures we get the related venue and posterImage data
+    depth: 2,
   })
 
-  // Combine and transform events
+  // Combine and transform events - leaving incase bring TicketTailor back in
   const combinedEvents: CombinedEvent[] = [
     ...cmsEvents.map((event: Event) => {
       const posterImage = event.posterImage as Media
@@ -67,12 +68,11 @@ export default async function PreviousEventsPage() {
 
   // Filter events to only show past events
   const today = new Date()
-  today.setHours(0, 0, 0, 0) // Set to start of today
+  today.setHours(0, 0, 0, 0)
 
   const pastEvents = sortedEvents.filter((event) => {
     const eventDate = new Date(event.date)
-    eventDate.setHours(0, 0, 0, 0) // Set to start of event day
-    return eventDate < today
+    eventDate.setHours(0, 0, 0, 0)
   })
 
   return (
@@ -81,11 +81,10 @@ export default async function PreviousEventsPage() {
         {/* Header */}
         <div className="relative flex items-center justify-center flex-col mb-16">
           <Image
-            src="https://jfkf0uemou6lrnps.public.blob.vercel-storage.com/Crilli%20Logo%20est%20belf.png"
+            src={buildMediaSrc('/api/media/file/Crilli%20Logo%20est%20belf.png')}
             alt="Crilli DnB Belfast Logo"
             width={300}
             height={225}
-            loading="lazy"
             priority
           />
           <div className="max-w-4xl text-center pt-10">

@@ -3,7 +3,6 @@ import Image from 'next/image'
 import { buildMediaSrc } from '@/lib/utils'
 import { usePlayer } from '@/components/SitePlayer'
 import { Play, Pause } from '@phosphor-icons/react'
-// removed unused imports
 
 type PodcastCardProps = {
   podcast: {
@@ -70,21 +69,21 @@ export default function PodcastCard({ podcast }: { podcast: PodcastCardProps['po
         >
           <Image
             src={buildMediaSrc(podcast.posterImage.url)}
-            alt={podcast.artist}
+            alt={`${podcast.artist} podcast artwork`}
             fill
             className="object-cover aspect-square"
             sizes="(max-width: 768px) 100vw, 400px"
-            unoptimized
+            loading="lazy"
+            placeholder="blur"
+            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
           />
 
-          {/* Always visible pause icon when playing */}
           {showPlayControls && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-md backdrop-opacity-30 z-10">
               <Pause className="w-16 h-16 text-white drop-shadow-lg" weight="fill" />
             </div>
           )}
 
-          {/* Hover play icon overlay (only show when not playing) */}
           {!showPlayControls && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-md backdrop-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
               <Play className="w-16 h-16 text-white drop-shadow-lg" weight="fill" />
