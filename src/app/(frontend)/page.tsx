@@ -41,6 +41,7 @@ export default async function HomePage() {
   const { docs: cmsEvents } = await payload.find({
     collection: 'events',
     depth: 2,
+    limit: 1000, // High limit to fetch all events
   })
 
   // Fetch Ticket Tailor events

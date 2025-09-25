@@ -15,7 +15,7 @@ export const Podcasts: CollectionConfig = {
       name: 'artist',
       type: 'text',
       required: true,
-      maxLength: 20,
+      maxLength: 30,
       admin: {
         description: 'Artist name (max 25 characters)',
       },
