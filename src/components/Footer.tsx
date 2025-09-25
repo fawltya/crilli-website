@@ -24,11 +24,11 @@ export default function Footer({
       {/* Footer */}
       <div className="mt-16 w-full flex md:flex-row flex-col justify-between align-bottom md:gap-4 gap-10 items-center md:items-start">
         <Image
-          src="https://jfkf0uemou6lrnps.public.blob.vercel-storage.com/Crilli%20Logo%20est%20belf.png"
+          src="/api/media/file/Crilli%20Logo%20est%20belf.png"
           alt="Crilli DnB Belfast Logo"
           width={200}
           height={300}
-          unoptimized
+          loading="lazy"
         />
         <div className="flex flex-col gap-4 md:text-right justify-end md:align-end text-center">
           <div>
