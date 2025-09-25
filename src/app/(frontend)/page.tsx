@@ -39,7 +39,7 @@ export default async function HomePage() {
   // Fetch CMS events
   const { docs: cmsEvents } = await payload.find({
     collection: 'events',
-    depth: 2, // This ensures we get the related venue and posterImage data
+    depth: 2,
   })
 
   // Fetch Ticket Tailor events
