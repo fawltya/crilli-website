@@ -12,7 +12,18 @@ const nextConfig = {
     return [
       {
         source: '/api/media/file/:path*',
-        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+          { key: 'Content-Encoding', value: 'gzip' },
+        ],
+      },
+      {
+        source: '/(.*)',
+        headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'X-XSS-Protection', value: '1; mode=block' },
+        ],
       },
     ]
   },
@@ -31,7 +42,11 @@ const nextConfig = {
     ],
   },
   experimental: {
-    optimizePackageImports: ['@phosphor-icons/react'],
+    optimizePackageImports: [
+      '@phosphor-icons/react',
+      '@radix-ui/react-separator',
+      '@radix-ui/react-slot',
+    ],
   },
 }
 

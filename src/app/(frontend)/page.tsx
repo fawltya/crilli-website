@@ -146,10 +146,10 @@ export default async function HomePage() {
         <div className="relative flex items-center justify-center flex-col ">
           <Image
             src="https://jfkf0uemou6lrnps.public.blob.vercel-storage.com/Crilli%20Logo%20est%20belf.png"
-            alt="Your alt text"
+            alt="Crilli DnB Belfast Logo"
             width={400}
             height={300}
-            unoptimized
+            priority
           />
           <div className="max-w-4xl text-center pt-10">
             <p className="mb-4">
@@ -188,11 +188,11 @@ export default async function HomePage() {
         <div className="mt-16 w-full ">
           <Image
             src="/api/media/file/Crilli%20DnB%20-%20Kev.jpg"
-            alt="Your alt text"
-            unoptimized
+            alt="Crilli DnB promotional image"
             className="rounded-sm overflow-hidden"
             width={1200}
             height={400}
+            priority
           />
         </div>
         <div id="podcasts">
