@@ -85,7 +85,8 @@ export default async function PreviousEventsPage() {
             alt="Crilli DnB Belfast Logo"
             width={300}
             height={225}
-            unoptimized
+            loading="lazy"
+            priority
           />
           <div className="max-w-4xl text-center pt-10">
             <h1 className="text-3xl font-bold mb-4">Previous Events</h1>
