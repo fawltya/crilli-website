@@ -40,6 +40,8 @@ const nextConfig = {
       { protocol: 'https', hostname: 'uploads.tickettailor.com', pathname: '/**' },
       { protocol: 'https', hostname: 'crilli-website.vercel.app', pathname: '/**' },
     ],
+    // Disable optimization for PayloadCMS media routes to avoid conflicts
+    unoptimized: false,
   },
   experimental: {
     optimizePackageImports: [
