@@ -11,6 +11,7 @@ import type { Event, Media, Venue, Podcast } from '@/payload-types'
 import { Button } from '@/components/ui/button'
 import Footer from '@/components/Footer'
 import { buildMediaSrc } from '@/lib/utils'
+import { generateEventsStructuredData } from '@/lib/structuredData'
 
 export const metadata = {
   title: 'Crilli DnB Belfast',
@@ -139,84 +140,96 @@ export default async function HomePage() {
     return numB - numA // Sort descending (newest first)
   })
 
+  const upcomingEventsStructuredData = generateEventsStructuredData(upcomingEvents)
+
   return (
-    <main className="bg-crilli-900 text-crilli-50 uppercase  py-20 lg:px-20 px-8 font-main">
-      <div className="container mx-auto max-w-7xl">
-        <div className="relative flex items-center justify-center flex-col ">
-          <Image
-            src={buildMediaSrc('/api/media/file/Crilli%20Logo%20est%20belf.png')}
-            alt="Crilli DnB Belfast Logo"
-            width={400}
-            height={300}
-            priority
-          />
-          <div className="max-w-4xl text-center pt-10">
-            <p className="mb-4">
-              Established in 2005 <strong>Crilli</strong> is a Drum & Bass + Jungle promotion based
-              in Belfast.
-            </p>
-            <p>
-              We have been a part of Ireland&apos;s underground music culture for two decades,
-              giving artists like Goldie, Calibre, DJ Hazard, Sully, London Elektricity and DJ MArky
-              the pleasure of experiencing beautiful Belfast audiences.
-            </p>
-          </div>
-        </div>
-        {/* Events */}
-        <div id="events">
-          <h2 className="text-crilli-50  mt-20 mb-6 text-xl font-semibold md:text-left text-center">
-            Upcoming Events
-          </h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 gap-y-15 auto-rows-fr md:justify-items-start justify-items-center">
-          {upcomingEvents.length > 0 ? (
-            upcomingEvents.map((event) => (
-              <EventCard key={`${event.source}-${event.id}`} event={event} />
-            ))
-          ) : (
-            <div className="col-span-full text-left py-8">
-              <p className="text-crilli-200 text-lg">Nothing scheduled right now...</p>
-              <p className="text-crilli-400 text-sm mt-2">Check back soon for more events.</p>
-            </div>
-          )}
-        </div>
-        <div className="mt-8">
-          <Button asChild variant="outline">
-            <Link href="/previous-events">See Previous Events</Link>
-          </Button>
-        </div>
-        <div className="mt-16 w-full ">
-          <Image
-            src={buildMediaSrc('/api/media/file/Crilli%20DnB%20-%20Kev.jpg')}
-            alt="Crilli DnB promotional image"
-            className="rounded-sm overflow-hidden"
-            width={1200}
-            height={400}
-            priority
-          />
-        </div>
-        {/* Podcasts */}
-        <div id="podcasts">
-          <h2 className="text-crilli-50 mt-20 mb-4 text-xl font-semibold md:text-left text-center">
-            Latest Podcasts
-          </h2>
-        </div>
-        <div className="relative flex flex-col gap-1">
-          <div className="overflow-x-auto scrollbar-hide" id="podcast-scroll">
-            <div className="flex gap-6 pb-4 min-w-max">
-              {sortedPodcasts.map((podcast) => (
-                <div key={`${podcast.artist}-${podcast.date}`} className="flex-shrink-0 w-64">
-                  <PodcastCard podcast={podcast} />
-                </div>
-              ))}
+    <>
+      {/* Structured Data for Events */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(upcomingEventsStructuredData),
+        }}
+      />
+
+      <main className="bg-crilli-900 text-crilli-50 uppercase  py-20 lg:px-20 px-8 font-main">
+        <div className="container mx-auto max-w-7xl">
+          <div className="relative flex items-center justify-center flex-col ">
+            <Image
+              src={buildMediaSrc('/api/media/file/Crilli%20Logo%20est%20belf.png')}
+              alt="Crilli DnB Belfast Logo"
+              width={400}
+              height={300}
+              priority
+            />
+            <div className="max-w-4xl text-center pt-10">
+              <p className="mb-4">
+                Established in 2005 <strong>Crilli</strong> is a Drum & Bass + Jungle promotion
+                based in Belfast.
+              </p>
+              <p>
+                We have been a part of Ireland&apos;s underground music culture for two decades,
+                giving artists like Goldie, Calibre, DJ Hazard, Sully, London Elektricity and DJ
+                MArky the pleasure of experiencing beautiful Belfast audiences.
+              </p>
             </div>
           </div>
-          {/* Scroll Right Button */}
-          <ScrollButton containerId="podcast-scroll" />
+          {/* Events */}
+          <div id="events">
+            <h2 className="text-crilli-50  mt-20 mb-6 text-xl font-semibold md:text-left text-center">
+              Upcoming Events
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 gap-y-15 auto-rows-fr md:justify-items-start justify-items-center">
+            {upcomingEvents.length > 0 ? (
+              upcomingEvents.map((event) => (
+                <EventCard key={`${event.source}-${event.id}`} event={event} />
+              ))
+            ) : (
+              <div className="col-span-full text-left py-8">
+                <p className="text-crilli-200 text-lg">Nothing scheduled right now...</p>
+                <p className="text-crilli-400 text-sm mt-2">Check back soon for more events.</p>
+              </div>
+            )}
+          </div>
+          <div className="mt-8">
+            <Button asChild variant="outline">
+              <Link href="/previous-events">See Previous Events</Link>
+            </Button>
+          </div>
+          <div className="mt-16 w-full ">
+            <Image
+              src={buildMediaSrc('/api/media/file/Crilli%20DnB%20-%20Kev.jpg')}
+              alt="Crilli DnB promotional image"
+              className="rounded-sm overflow-hidden"
+              width={1200}
+              height={400}
+              priority
+            />
+          </div>
+          {/* Podcasts */}
+          <div id="podcasts">
+            <h2 className="text-crilli-50 mt-20 mb-4 text-xl font-semibold md:text-left text-center">
+              Latest Podcasts
+            </h2>
+          </div>
+          <div className="relative flex flex-col gap-1">
+            <div className="overflow-x-auto scrollbar-hide" id="podcast-scroll">
+              <div className="flex gap-6 pb-4 min-w-max">
+                {sortedPodcasts.map((podcast) => (
+                  <div key={`${podcast.artist}-${podcast.date}`} className="flex-shrink-0 w-64">
+                    <PodcastCard podcast={podcast} />
+                  </div>
+                ))}
+              </div>
+            </div>
+            {/* Scroll Right Button */}
+            <ScrollButton containerId="podcast-scroll" />
+          </div>
+          {/* Footer */}
+          <Footer />
         </div>
-        {/* Footer */}
-        <Footer />
-      </div>
-    </main>
+      </main>
+    </>
   )
 }
