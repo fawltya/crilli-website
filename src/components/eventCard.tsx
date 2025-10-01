@@ -1,9 +1,14 @@
+'use client'
+
 import Image from 'next/image'
 import Link from 'next/link'
+import { useState } from 'react'
 
 import { Separator } from './ui/separator'
 import { Button } from './ui/button'
 import { buildMediaSrc } from '@/lib/utils'
+import { useImageColor } from '@/hooks/useImageColor'
+import { generateGlowShadow } from '@/lib/colorExtraction'
 
 type EventCardProps = {
   event: {
@@ -18,6 +23,10 @@ type EventCardProps = {
 }
 
 export default function EventCard({ event, isPastEvent = false }: EventCardProps) {
+  const [isHovered, setIsHovered] = useState(false)
+  const imageUrl = buildMediaSrc(event.posterImage.url)
+  const { color } = useImageColor(imageUrl)
+
   const isFree = !event.price || event.price.trim() === '0' || event.price.toLowerCase() === 'free'
   const dateObj = new Date(event.date)
   const dateStr = dateObj.toLocaleDateString('en-GB', {
@@ -27,19 +36,33 @@ export default function EventCard({ event, isPastEvent = false }: EventCardProps
     year: 'numeric',
   })
 
+  // Generate hover styles based on extracted color (only for image)
+  const imageHoverStyles =
+    color && isHovered
+      ? {
+          boxShadow: generateGlowShadow(color, 0.8),
+          transform: 'scale(1.01)',
+        }
+      : {}
+
   return (
-    <div className="overflow-hidden shadow-lg max-w-md w-full h-full flex flex-col">
-      <div className="relative w-full aspect-[4/5] rounded-sm overflow-hidden">
+    <div
+      className="overflow-visible shadow-lg max-w-md w-full h-full flex flex-col transition-all duration-300 ease-in-out"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className="relative w-full aspect-[4/5] rounded-sm overflow-visible p-2">
         {isPastEvent ? (
           <Image
-            src={buildMediaSrc(event.posterImage.url)}
+            src={imageUrl}
             alt={`${event.title} event poster`}
             fill
-            className="object-cover"
+            className="object-cover rounded-sm transition-all duration-300 ease-in-out"
             sizes="(max-width: 768px) 100vw, 400px"
             loading="lazy"
             placeholder="blur"
             blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+            style={imageHoverStyles}
           />
         ) : (
           <Link
@@ -49,14 +72,15 @@ export default function EventCard({ event, isPastEvent = false }: EventCardProps
             aria-label={`View details for ${event.title} event`}
           >
             <Image
-              src={buildMediaSrc(event.posterImage.url)}
+              src={imageUrl}
               alt={`${event.title} event poster`}
               fill
-              className="object-cover"
+              className="object-cover rounded-sm transition-all duration-300 ease-in-out"
               sizes="(max-width: 768px) 100vw, 400px"
               loading="lazy"
               placeholder="blur"
               blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+              style={imageHoverStyles}
             />
           </Link>
         )}

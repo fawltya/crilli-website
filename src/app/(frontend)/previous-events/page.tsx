@@ -101,7 +101,10 @@ export default async function PreviousEventsPage() {
             />
             <div className="max-w-4xl text-center pt-10">
               <h1 className="text-3xl font-bold mb-4">Previous Events</h1>
-              <p className="mb-4">Take a look back at our past events and shows.</p>
+              <p className="mb-4">
+                We&apos;ve been lucky enough to promote and play at some great parties over the
+                years...
+              </p>
             </div>
           </div>
 

@@ -165,7 +165,7 @@ export default async function HomePage() {
             />
             <div className="max-w-4xl text-center pt-10">
               <p className="mb-4">
-                Established in 2005 <strong>Crilli</strong> is a Drum & Bass + Jungle promotion
+                Established in 2005, <strong>Crilli</strong> is a Drum & Bass + Jungle promotion
                 based in Belfast.
               </p>
               <p>
