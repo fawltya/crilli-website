@@ -29,6 +29,11 @@ interface CombinedEvent {
   venue: { name: string; city: string }
   price?: string | null
   eventLink?: string | null
+  posterArtist?: {
+    name: string
+    link: string
+    colour: string
+  }
   source: 'cms' | 'tickettailor'
 }
 

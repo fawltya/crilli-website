@@ -252,7 +252,7 @@ export interface Venue {
 export interface PosterArtist {
   id: number;
   name: string;
-  instagram: string;
+  link: string;
   /**
    * Enter the colour in hex format (e.g., "#000000")
    */
@@ -496,7 +496,7 @@ export interface PodcastsSelect<T extends boolean = true> {
  */
 export interface PosterArtistSelect<T extends boolean = true> {
   name?: T;
-  instagram?: T;
+  link?: T;
   colour?: T;
   updatedAt?: T;
   createdAt?: T;

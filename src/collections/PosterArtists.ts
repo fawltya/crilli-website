@@ -4,7 +4,7 @@ export const posterArtist: CollectionConfig = {
   slug: 'poster-artist',
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'instagram', 'colour'],
+    defaultColumns: ['name', 'link', 'colour'],
   },
   access: {
     read: () => true,
@@ -16,7 +16,7 @@ export const posterArtist: CollectionConfig = {
       required: true,
     },
     {
-      name: 'instagram',
+      name: 'link',
       type: 'text',
       required: true,
     },
