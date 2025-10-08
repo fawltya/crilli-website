@@ -72,6 +72,7 @@ export interface Config {
     events: Event;
     venues: Venue;
     podcasts: Podcast;
+    'poster-artist': PosterArtist;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -83,6 +84,7 @@ export interface Config {
     events: EventsSelect<false> | EventsSelect<true>;
     venues: VenuesSelect<false> | VenuesSelect<true>;
     podcasts: PodcastsSelect<false> | PodcastsSelect<true>;
+    'poster-artist': PosterArtistSelect<false> | PosterArtistSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -213,6 +215,10 @@ export interface Event {
    * Upload the event poster image
    */
   posterImage: number | Media;
+  /**
+   * Select the poster artist for this event
+   */
+  posterArtist?: (number | null) | PosterArtist;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -236,6 +242,21 @@ export interface Venue {
    * Link to the venue's website or social media
    */
   link?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "poster-artist".
+ */
+export interface PosterArtist {
+  id: number;
+  name: string;
+  instagram: string;
+  /**
+   * Enter the colour in hex format (e.g., "#000000")
+   */
+  colour: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -302,6 +323,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'podcasts';
         value: number | Podcast;
+      } | null)
+    | ({
+        relationTo: 'poster-artist';
+        value: number | PosterArtist;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -423,6 +448,7 @@ export interface EventsSelect<T extends boolean = true> {
   price?: T;
   eventLink?: T;
   posterImage?: T;
+  posterArtist?: T;
   meta?:
     | T
     | {
@@ -461,6 +487,17 @@ export interface PodcastsSelect<T extends boolean = true> {
         description?: T;
         image?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "poster-artist_select".
+ */
+export interface PosterArtistSelect<T extends boolean = true> {
+  name?: T;
+  instagram?: T;
+  colour?: T;
   updatedAt?: T;
   createdAt?: T;
 }

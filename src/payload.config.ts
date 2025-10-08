@@ -11,6 +11,7 @@ import { Media } from './collections/Media'
 import { Events } from './collections/Events'
 import { Venues } from './collections/Venues'
 import { Podcasts } from './collections/Podcasts'
+import { posterArtist } from './collections/PosterArtists'
 
 const dirname = path.resolve(process.cwd(), 'src')
 export default buildConfig({
@@ -20,7 +21,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Events, Venues, Podcasts],
+  collections: [Users, Media, Events, Venues, Podcasts, posterArtist],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
@@ -47,7 +48,6 @@ export default buildConfig({
       generateTitle: ({ doc }) => `${doc.title || doc.artist} - Crilli`,
       generateDescription: ({ doc }) => {
         if (doc.title) {
-          // Check if venue data is populated and has a name
           const venueName = doc.venue?.name || doc.venue?.title
           if (venueName) {
             return `Join us for ${doc.title} at ${venueName}`
@@ -60,7 +60,6 @@ export default buildConfig({
         return `Check out this content on Crilli`
       },
       generateURL: ({ doc }) => {
-        // Generate slug from title/artist
         let slug = ''
         if (doc.title) {
           slug = doc.title
@@ -84,7 +83,6 @@ export default buildConfig({
         return `https://crilli.com/${doc.id}`
       },
       generateImage: ({ doc }) => {
-        // Auto-generate meta image from poster image
         if (doc.posterImage) {
           return doc.posterImage
         }

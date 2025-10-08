@@ -73,5 +73,14 @@ export const Events: CollectionConfig = {
         description: 'Upload the event poster image',
       },
     },
+    {
+      name: 'posterArtist',
+      type: 'relationship',
+      relationTo: 'poster-artist',
+      required: false,
+      admin: {
+        description: 'Select the poster artist for this event',
+      },
+    },
   ],
 }
