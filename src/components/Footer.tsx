@@ -23,7 +23,7 @@ export default function Footer({
   return (
     <>
       {/* Footer */}
-      <div className="mt-16 w-full flex md:flex-row flex-col justify-between align-bottom md:gap-4 gap-10 items-center md:items-start">
+      <div className="mt-16 flex w-full flex-col items-center justify-between gap-10 align-bottom md:flex-row md:items-start md:gap-4">
         <Image
           src={buildMediaSrc('/api/media/file/Crilli%20Logo%20est%20belf.png')}
           alt="Crilli DnB Belfast Logo"
@@ -31,7 +31,7 @@ export default function Footer({
           height={300}
           loading="lazy"
         />
-        <div className="flex flex-col gap-4 md:text-right justify-end md:align-end text-center">
+        <div className="md:align-end flex flex-col justify-end gap-4 text-center md:text-right">
           <div>
             {navigationLinks.map((link, index) => (
               <span key={link.href}>
@@ -49,14 +49,14 @@ export default function Footer({
           {showSubscriptionForm && (
             <>
               <div>
-                <p className="text-sm text-crilli-200">
+                <p className="text-crilli-200 text-sm">
                   Sign up to our mailing list for early access to tickets
                 </p>
               </div>
               <SubscriptionForm />
             </>
           )}
-          <div className="flex gap-4 md:justify-end justify-center">
+          <div className="flex justify-center gap-4 md:justify-end">
             <Link
               href="https://www.instagram.com/crillidnb/"
               target="_blank"
@@ -100,7 +100,7 @@ export default function Footer({
           </div>
         </div>
       </div>
-      <Separator className="bg-crilli-400/30 w-full mt-10" orientation="horizontal" />
+      <Separator className="bg-crilli-400/30 mt-10 w-full" orientation="horizontal" />
     </>
   )
 }

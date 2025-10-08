@@ -57,6 +57,7 @@ export default async function HomePage() {
     ...cmsEvents.map((event: Event) => {
       const posterImage = event.posterImage as Media
       const venue = event.venue as Venue
+      const posterArtist = event.posterArtist as any
 
       return {
         id: String(event.id),
@@ -69,6 +70,13 @@ export default async function HomePage() {
         },
         price: event.price,
         eventLink: event.eventLink,
+        posterArtist: posterArtist
+          ? {
+              name: posterArtist.name,
+              link: posterArtist.link,
+              colour: posterArtist.colour,
+            }
+          : undefined,
         source: 'cms' as const,
       }
     }),
@@ -158,9 +166,9 @@ export default async function HomePage() {
         }}
       />
 
-      <main className="bg-crilli-900 text-crilli-50 uppercase  py-20 lg:px-20 px-8 font-main">
+      <main className="bg-crilli-900 text-crilli-50 font-main px-8 py-20 uppercase lg:px-20">
         <div className="container mx-auto max-w-7xl">
-          <div className="relative flex items-center justify-center flex-col ">
+          <div className="relative flex flex-col items-center justify-center">
             <Image
               src={buildMediaSrc('/api/media/file/Crilli%20Logo%20est%20belf.png')}
               alt="Crilli DnB Belfast Logo"
@@ -168,7 +176,7 @@ export default async function HomePage() {
               height={300}
               priority
             />
-            <div className="max-w-4xl text-center pt-10">
+            <div className="max-w-4xl pt-10 text-center">
               <p className="mb-4">
                 Established in 2005, <strong>Crilli</strong> is a Drum & Bass + Jungle promotion
                 based in Belfast.
@@ -182,19 +190,19 @@ export default async function HomePage() {
           </div>
           {/* Events */}
           <div id="events">
-            <h2 className="text-crilli-50  mt-20 mb-6 text-xl font-semibold md:text-left text-center">
+            <h2 className="text-crilli-50 mt-20 mb-6 text-center text-xl font-semibold md:text-left">
               Upcoming Events
             </h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 gap-y-15 auto-rows-fr md:justify-items-start justify-items-center">
+          <div className="grid auto-rows-fr grid-cols-1 justify-items-center gap-10 gap-y-15 md:grid-cols-3 md:justify-items-start">
             {upcomingEvents.length > 0 ? (
               upcomingEvents.map((event) => (
                 <EventCard key={`${event.source}-${event.id}`} event={event} />
               ))
             ) : (
-              <div className="col-span-full text-left py-8">
+              <div className="col-span-full py-8 text-left">
                 <p className="text-crilli-200 text-lg">Nothing scheduled right now...</p>
-                <p className="text-crilli-400 text-sm mt-2">Check back soon for more events.</p>
+                <p className="text-crilli-400 mt-2 text-sm">Check back soon for more events.</p>
               </div>
             )}
           </div>
@@ -203,11 +211,11 @@ export default async function HomePage() {
               <Link href="/previous-events">See Previous Events</Link>
             </Button>
           </div>
-          <div className="mt-16 w-full ">
+          <div className="mt-16 w-full">
             <Image
               src={buildMediaSrc('/api/media/file/Crilli%20DnB%20-%20Kev.jpg')}
               alt="Crilli DnB promotional image"
-              className="rounded-sm overflow-hidden"
+              className="overflow-hidden rounded-sm"
               width={1200}
               height={400}
               priority
@@ -215,15 +223,15 @@ export default async function HomePage() {
           </div>
           {/* Podcasts */}
           <div id="podcasts">
-            <h2 className="text-crilli-50 mt-20 mb-4 text-xl font-semibold md:text-left text-center">
+            <h2 className="text-crilli-50 mt-20 mb-4 text-center text-xl font-semibold md:text-left">
               Latest Podcasts
             </h2>
           </div>
           <div className="relative flex flex-col gap-1">
-            <div className="overflow-x-auto scrollbar-hide" id="podcast-scroll">
-              <div className="flex gap-6 pb-4 min-w-max">
+            <div className="scrollbar-hide overflow-x-auto" id="podcast-scroll">
+              <div className="flex min-w-max gap-6 pb-4">
                 {sortedPodcasts.map((podcast) => (
-                  <div key={`${podcast.artist}-${podcast.date}`} className="flex-shrink-0 w-64">
+                  <div key={`${podcast.artist}-${podcast.date}`} className="w-64 flex-shrink-0">
                     <PodcastCard podcast={podcast} />
                   </div>
                 ))}

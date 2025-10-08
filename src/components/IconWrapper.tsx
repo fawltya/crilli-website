@@ -55,7 +55,7 @@ export default function IconWrapper({
         size={size}
         weight={weight}
         color={color}
-        className="w-full h-full hover:opacity-100 opacity-70 transition-all duration-300"
+        className="h-full w-full opacity-70 transition-all duration-300 hover:opacity-100"
       />
     </div>
   )
