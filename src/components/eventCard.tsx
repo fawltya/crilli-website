@@ -18,7 +18,7 @@ type EventCardProps = {
     venue: { name: string; city: string }
     price?: string | null
     eventLink?: string | null
-    posterArtist: {
+    posterArtist?: {
       name: string
       link: string
       colour: string
@@ -54,15 +54,25 @@ export default function EventCard({ event, isPastEvent = false }: EventCardProps
 
   return (
     <>
-      <div>
-        <div className="rounded-xl blur-lg bg-[{event.posterArtist.colour}] p-4"></div>
-        <p>
-          Designed by{' '}
-          <Link href={event.posterArtist.link} target="_blank" rel="noopener noreferrer">
-            {event.posterArtist.name}
-          </Link>
-        </p>
-      </div>
+      {event.posterArtist && isHovered && (
+        <div className="fixed top-3 left-1/2 rotate-[-90deg] flex flex-col gap-2 border-2 border-crilli-50 rounded bg-crilli-900 p-3 z-50">
+          <div
+            className="rounded-xl blur-lg p-4"
+            style={{ backgroundColor: event.posterArtist.colour }}
+          ></div>
+          <p className="text-crilli-50 text-sm">
+            Designed by{' '}
+            <Link
+              href={event.posterArtist.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-crilli-200 hover:text-crilli-100 underline"
+            >
+              {event.posterArtist.name}
+            </Link>
+          </p>
+        </div>
+      )}
 
       <div
         className="overflow-visible shadow-lg max-w-md w-full h-full flex flex-col transition-all duration-300 ease-in-out"
