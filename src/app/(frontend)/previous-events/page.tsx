@@ -51,6 +51,7 @@ export default async function PreviousEventsPage() {
     ...cmsEvents.map((event: Event) => {
       const posterImage = event.posterImage as Media
       const venue = event.venue as Venue
+      const posterArtist = event.posterArtist as any
 
       return {
         id: String(event.id),
@@ -63,6 +64,13 @@ export default async function PreviousEventsPage() {
         },
         price: event.price,
         eventLink: event.eventLink,
+        posterArtist: posterArtist
+          ? {
+              name: posterArtist.name,
+              link: posterArtist.link,
+              colour: posterArtist.colour,
+            }
+          : undefined,
         source: 'cms' as const,
       }
     }),
@@ -93,10 +101,10 @@ export default async function PreviousEventsPage() {
         }}
       />
 
-      <main className="bg-crilli-900 text-crilli-50 uppercase py-20 lg:px-20 px-8 font-main">
+      <main className="bg-crilli-900 text-crilli-50 font-main px-8 py-20 uppercase lg:px-20">
         <div className="container mx-auto max-w-7xl">
           {/* Header */}
-          <div className="relative flex items-center justify-center flex-col mb-16">
+          <div className="relative mb-16 flex flex-col items-center justify-center">
             <Image
               src={buildMediaSrc('/api/media/file/Crilli%20Logo%20est%20belf.png')}
               alt="Crilli DnB Belfast Logo"
@@ -104,8 +112,8 @@ export default async function PreviousEventsPage() {
               height={225}
               priority
             />
-            <div className="max-w-4xl text-center pt-10">
-              <h1 className="text-3xl font-bold mb-4">Previous Events</h1>
+            <div className="max-w-4xl pt-10 text-center">
+              <h1 className="mb-4 text-3xl font-bold">Previous Events</h1>
               <p className="mb-4">
                 We&apos;ve been lucky enough to promote and play at some great parties over the
                 years...
@@ -122,19 +130,19 @@ export default async function PreviousEventsPage() {
 
           {/* Events Grid */}
           <div>
-            <h2 className="text-crilli-50 mb-6 text-xl font-semibold md:text-left text-center">
+            <h2 className="text-crilli-50 mb-6 text-center text-xl font-semibold md:text-left">
               Past Events
             </h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 gap-y-15 auto-rows-fr md:justify-items-start justify-items-center">
+          <div className="grid auto-rows-fr grid-cols-1 justify-items-center gap-10 gap-y-15 md:grid-cols-3 md:justify-items-start">
             {pastEvents.length > 0 ? (
               pastEvents.map((event) => (
                 <EventCard key={`${event.source}-${event.id}`} event={event} isPastEvent={true} />
               ))
             ) : (
-              <div className="col-span-full text-left py-8">
+              <div className="col-span-full py-8 text-left">
                 <p className="text-crilli-200 text-lg">No past events found</p>
-                <p className="text-crilli-400 text-sm mt-2">
+                <p className="text-crilli-400 mt-2 text-sm">
                   Check out our{' '}
                   <Link href="/" className="text-crilli-200 hover:text-crilli-100 underline">
                     upcoming events

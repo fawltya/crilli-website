@@ -27,8 +27,6 @@ type EventCardProps = {
   isPastEvent?: boolean
 }
 
-type designerTagProps = {}
-
 export default function EventCard({ event, isPastEvent = false }: EventCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const imageUrl = buildMediaSrc(event.posterImage.url)
@@ -54,38 +52,37 @@ export default function EventCard({ event, isPastEvent = false }: EventCardProps
 
   return (
     <>
-      {event.posterArtist && isHovered && (
-        <div className="fixed top-3 left-1/2 rotate-[-90deg] flex flex-col gap-2 border-2 border-crilli-50 rounded bg-crilli-900 p-3 z-50">
-          <div
-            className="rounded-xl blur-lg p-4"
-            style={{ backgroundColor: event.posterArtist.colour }}
-          ></div>
-          <p className="text-crilli-50 text-sm">
-            Designed by{' '}
-            <Link
-              href={event.posterArtist.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-crilli-200 hover:text-crilli-100 underline"
-            >
-              {event.posterArtist.name}
-            </Link>
-          </p>
-        </div>
-      )}
-
       <div
-        className="overflow-visible shadow-lg max-w-md w-full h-full flex flex-col transition-all duration-300 ease-in-out"
+        className="flex h-full w-full max-w-md flex-col overflow-visible shadow-lg transition-all duration-300 ease-in-out"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div className="relative w-full aspect-[4/5] rounded-sm overflow-visible p-2">
+        <div className="relative aspect-[4/5] w-full overflow-visible rounded-sm p-2">
+          {event.posterArtist && isHovered && (
+            <div className="border-crilli-400/50 bg-crilli-700/70 absolute top-1 right-1 z-50 flex flex-row items-center gap-2 rounded border-1 px-2 py-1 backdrop-blur-md backdrop-opacity-30 transition-all duration-300 ease-in-out">
+              <div
+                className="blur-2xs h-3 w-3 rounded-xl blur-[2px]"
+                style={{ backgroundColor: event.posterArtist.colour }}
+              ></div>
+              <p className="text-crilli-50 text-[9px]">
+                Design by{' '}
+                <Link
+                  href={event.posterArtist.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-crilli-200 hover:text-crilli-100 font-bold"
+                >
+                  {event.posterArtist.name}
+                </Link>
+              </p>
+            </div>
+          )}
           {isPastEvent ? (
             <Image
               src={imageUrl}
               alt={`${event.title} event poster`}
               fill
-              className="object-cover rounded-sm transition-all duration-300 ease-in-out"
+              className="rounded-sm object-cover transition-all duration-300 ease-in-out"
               sizes="(max-width: 768px) 100vw, 400px"
               loading="lazy"
               placeholder="blur"
@@ -103,7 +100,7 @@ export default function EventCard({ event, isPastEvent = false }: EventCardProps
                 src={imageUrl}
                 alt={`${event.title} event poster`}
                 fill
-                className="object-cover rounded-sm transition-all duration-300 ease-in-out"
+                className="rounded-sm object-cover transition-all duration-300 ease-in-out"
                 sizes="(max-width: 768px) 100vw, 400px"
                 loading="lazy"
                 placeholder="blur"
@@ -116,33 +113,33 @@ export default function EventCard({ event, isPastEvent = false }: EventCardProps
 
         {isPastEvent ? (
           // Past event layout
-          <div className="py-6 px-2 flex flex-col gap-2">
-            <h2 className="text-lg leading-5 font-bold text-crilli-50 pb-1 line-clamp-2">
+          <div className="flex flex-col gap-2 px-2 py-6">
+            <h2 className="text-crilli-50 line-clamp-2 pb-1 text-lg leading-5 font-bold">
               {event.title}
             </h2>
             <div>
               <p className="text-crilli-50 text-sm">{dateStr}</p>
 
-              <p className="text-sm text-crilli-200">{event.venue.name}</p>
-              <p className="text-sm text-crilli-200">{event.venue.city}</p>
+              <p className="text-crilli-200 text-sm">{event.venue.name}</p>
+              <p className="text-crilli-200 text-sm">{event.venue.city}</p>
             </div>
           </div>
         ) : (
           // Upcoming event layout
-          <div className="py-6 px-2 flex flex-row gap-4 justify-between flex-grow">
-            <div className="w-full flex flex-col justify-between">
-              <h2 className="text-lg leading-5 font-bold text-crilli-50 pb-1 line-clamp-2">
+          <div className="flex flex-grow flex-row justify-between gap-4 px-2 py-6">
+            <div className="flex w-full flex-col justify-between">
+              <h2 className="text-crilli-50 line-clamp-2 pb-1 text-lg leading-5 font-bold">
                 {event.title}
               </h2>
               <div>
-                <p className="text-sm text-crilli-200">{event.venue.name}</p>
-                <p className="text-sm text-crilli-200">{event.venue.city}</p>
+                <p className="text-crilli-200 text-sm">{event.venue.name}</p>
+                <p className="text-crilli-200 text-sm">{event.venue.city}</p>
               </div>
             </div>
             <div>
               <Separator className="bg-crilli-400 w-full" orientation="vertical" />
             </div>
-            <div className="flex flex-col text-end items-end justify-between min-w-27">
+            <div className="flex min-w-27 flex-col items-end justify-between text-end">
               <p className="text-crilli-50 text-sm">{dateStr}</p>
 
               <Button variant="outline" asChild>
@@ -154,7 +151,7 @@ export default function EventCard({ event, isPastEvent = false }: EventCardProps
           </div>
         )}
 
-        <Separator className="bg-crilli-400 w-full mt-2" orientation="horizontal" />
+        <Separator className="bg-crilli-400 mt-2 w-full" orientation="horizontal" />
       </div>
     </>
   )

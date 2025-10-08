@@ -105,32 +105,32 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   return (
     <PlayerContext.Provider value={value}>
       {children}
-      <div className="fixed bottom-0 left-0 right-0 z-50">
+      <div className="fixed right-0 bottom-0 left-0 z-50">
         <audio ref={audioRef} className="hidden" preload="none" />
         {current ? (
-          <div className="bg-crilli-800/60 supports-[backdrop-filter]:bg-crilli-800/50 backdrop-blur-md border-t border-crilli-600/30 text-crilli-50 px-4 py-3 font-main uppercase shadow-lg w-full">
-            <div className="flex flex-row gap-6 md:items-center items-end">
-              <div className="max-w-7xl mx-auto flex  items-center gap-4">
+          <div className="bg-crilli-800/60 supports-[backdrop-filter]:bg-crilli-800/50 border-crilli-600/30 text-crilli-50 font-main w-full border-t px-4 py-3 uppercase shadow-lg backdrop-blur-md">
+            <div className="flex flex-row items-end gap-6 md:items-center">
+              <div className="mx-auto flex max-w-7xl items-center gap-4">
                 {current.artworkUrl ? (
-                  <div className="relative w-16 h-16 group">
+                  <div className="group relative h-16 w-16">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={buildMediaSrc(current.artworkUrl)}
                       alt={current.title}
-                      className="w-16 h-16 object-cover"
+                      className="h-16 w-16 object-cover"
                     />
                     {/* Play/Pause overlay button */}
                     <button
                       onClick={togglePlay}
                       aria-label={isPlaying ? 'Pause' : 'Play'}
-                      className={`absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-md backdrop-opacity-30 ${isPlaying ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity duration-200 rounded-sm`}
+                      className={`absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-md backdrop-opacity-30 ${isPlaying ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} rounded-sm transition-opacity duration-200`}
                     >
                       {isPlaying ? (
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 24 24"
                           fill="currentColor"
-                          className="w-8 h-8 text-white drop-shadow-lg"
+                          className="h-8 w-8 text-white drop-shadow-lg"
                         >
                           <path d="M6 5h4v14H6zM14 5h4v14h-4z" />
                         </svg>
@@ -139,7 +139,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 24 24"
                           fill="currentColor"
-                          className="w-8 h-8 text-white drop-shadow-lg"
+                          className="h-8 w-8 text-white drop-shadow-lg"
                         >
                           <path d="M8 5v14l11-7z" />
                         </svg>
@@ -148,13 +148,13 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                   </div>
                 ) : null}
               </div>
-              <div className="flex gap-2 flex-1 flex-col md:flex-row w-full">
-                <div className=" max-content">
+              <div className="flex w-full flex-1 flex-col gap-2 md:flex-row">
+                <div className="max-content">
                   <p className="text-lg leading-tight">Crilli Podcast - {current.artist}</p>
-                  <p className="text-sm text-crilli-200 truncate">{current.date}</p>
+                  <p className="text-crilli-200 truncate text-sm">{current.date}</p>
                 </div>
-                <div className="flex gap-1 flex-1 select-none justify-center align-middle items-center md:ml-0 -ml-3">
-                  <span className="text-xs text-crilli-200 w-10 text-right">
+                <div className="-ml-3 flex flex-1 items-center justify-center gap-1 align-middle select-none md:ml-0">
+                  <span className="text-crilli-200 w-10 text-right text-xs">
                     {formatTime(currentTime)}
                   </span>
                   <input
@@ -193,12 +193,12 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
                         audioRef.current.currentTime = next
                       }
                     }}
-                    className="flex-1 h-1 cursor-pointer accent-crilli-400"
+                    className="accent-crilli-400 h-1 flex-1 cursor-pointer"
                   />
-                  <span className="text-xs text-crilli-200 w-10">{formatTime(duration)}</span>
+                  <span className="text-crilli-200 w-10 text-xs">{formatTime(duration)}</span>
                 </div>
               </div>
-              <div className=" gap-4 flex-col md:flex-row hidden md:flex">
+              <div className="hidden flex-col gap-4 md:flex md:flex-row">
                 {current.externalLink ? (
                   <Button variant="outline" asChild>
                     <Link href={current.externalLink} target="_blank" rel="noopener noreferrer">

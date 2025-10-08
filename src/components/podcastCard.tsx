@@ -29,25 +29,25 @@ export default function PodcastCard({ podcast }: { podcast: PodcastCardProps['po
   // })
 
   return (
-    <div className="relative overflow-hidden shadow-lg max-w-md w-full h-full flex flex-col pt-7 pb-6 px-7  justify-between">
+    <div className="relative flex h-full w-full max-w-md flex-col justify-between overflow-hidden px-7 pt-7 pb-6 shadow-lg">
       {/* --- Corner Border Overlay --- */}
       <div className="pointer-events-none absolute inset-0">
         {/* top-left */}
-        <span className="absolute left-2 top-2 h-px w-12 bg-crilli-600" />
-        <span className="absolute left-2 top-2 h-12 w-px bg-crilli-600" />
+        <span className="bg-crilli-600 absolute top-2 left-2 h-px w-12" />
+        <span className="bg-crilli-600 absolute top-2 left-2 h-12 w-px" />
         {/* top-right */}
-        <span className="absolute right-2 top-2 h-px w-12 bg-crilli-600" />
-        <span className="absolute right-2 top-2 h-12 w-px bg-crilli-600" />
+        <span className="bg-crilli-600 absolute top-2 right-2 h-px w-12" />
+        <span className="bg-crilli-600 absolute top-2 right-2 h-12 w-px" />
         {/* bottom-left */}
-        <span className="absolute bottom-2 left-2 h-px w-12 bg-crilli-600" />
-        <span className="absolute bottom-2 left-2 h-12 w-px bg-crilli-600" />
+        <span className="bg-crilli-600 absolute bottom-2 left-2 h-px w-12" />
+        <span className="bg-crilli-600 absolute bottom-2 left-2 h-12 w-px" />
         {/* bottom-right */}
-        <span className="absolute bottom-2 right-2 h-px w-12 bg-crilli-600" />
-        <span className="absolute bottom-2 right-2 h-12 w-px bg-crilli-600" />
+        <span className="bg-crilli-600 absolute right-2 bottom-2 h-px w-12" />
+        <span className="bg-crilli-600 absolute right-2 bottom-2 h-12 w-px" />
       </div>
 
       {/* --- Image --- */}
-      <div className="relative aspect-[1/1] overflow-visible w-full group">
+      <div className="group relative aspect-[1/1] w-full overflow-visible">
         <button
           type="button"
           onClick={() => {
@@ -65,13 +65,13 @@ export default function PodcastCard({ podcast }: { podcast: PodcastCardProps['po
               })
             }
           }}
-          className="block w-full h-full relative"
+          className="relative block h-full w-full"
         >
           <Image
             src={buildMediaSrc(podcast.posterImage.url)}
             alt={`${podcast.artist} podcast artwork`}
             fill
-            className="object-cover aspect-square"
+            className="aspect-square object-cover"
             sizes="(max-width: 768px) 100vw, 400px"
             loading="lazy"
             placeholder="blur"
@@ -79,23 +79,23 @@ export default function PodcastCard({ podcast }: { podcast: PodcastCardProps['po
           />
 
           {showPlayControls && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-md backdrop-opacity-30 z-10">
-              <Pause className="w-16 h-16 text-white drop-shadow-lg" weight="fill" />
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/20 backdrop-blur-md backdrop-opacity-30">
+              <Pause className="h-16 w-16 text-white drop-shadow-lg" weight="fill" />
             </div>
           )}
 
           {!showPlayControls && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-md backdrop-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
-              <Play className="w-16 h-16 text-white drop-shadow-lg" weight="fill" />
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/20 opacity-0 backdrop-blur-md backdrop-opacity-40 transition-opacity duration-200 group-hover:opacity-100">
+              <Play className="h-16 w-16 text-white drop-shadow-lg" weight="fill" />
             </div>
           )}
         </button>
       </div>
 
       {/* --- Text Row --- */}
-      <div className="pt-3 px-1 flex flex-row w-full gap-3 justify-between">
-        <p className="text-sm text-crilli-200">{podcast.artist}</p>
-        <p className="text-sm text-crilli-200">{podcast.date}</p>
+      <div className="flex w-full flex-row justify-between gap-3 px-1 pt-3">
+        <p className="text-crilli-200 text-sm">{podcast.artist}</p>
+        <p className="text-crilli-200 text-sm">{podcast.date}</p>
       </div>
     </div>
   )

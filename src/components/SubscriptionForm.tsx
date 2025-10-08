@@ -70,7 +70,7 @@ export default function SubscriptionForm() {
 
   return (
     <div className="w-full">
-      <form onSubmit={handleSubmit} className="flex flex-row justify-end w-full">
+      <form onSubmit={handleSubmit} className="flex w-full flex-row justify-end">
         {/* Honeypot field - hidden from users but bots often fill it */}
         <div style={{ display: 'none' }}>
           <label htmlFor="website">Website (leave blank)</label>
@@ -97,14 +97,14 @@ export default function SubscriptionForm() {
             placeholder="Email address"
             required
             autoComplete="email"
-            className="uppercase w-full px-4 py-2 text-sm bg-crilli-800 border border-crilli-600  text-crilli-50 placeholder-crilli-400 focus:outline-none focus:ring-2 focus:ring-crilli-500 focus:border-transparent"
+            className="bg-crilli-800 border-crilli-600 text-crilli-50 placeholder-crilli-400 focus:ring-crilli-500 w-full border px-4 py-2 text-sm uppercase focus:border-transparent focus:ring-2 focus:outline-none"
           />
         </div>
         <Button
           type="submit"
           variant="outline"
           disabled={isSubmitting}
-          className="ml-2 fit-content uppercase transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="fit-content ml-2 uppercase transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isSubmitting ? 'Subscribing...' : 'Subscribe'}
         </Button>
@@ -112,10 +112,10 @@ export default function SubscriptionForm() {
 
       {message && (
         <div
-          className={`mt-4 p-3 rounded-lg text-sm ${
+          className={`mt-4 rounded-lg p-3 text-sm ${
             isSuccess
-              ? 'bg-green-900/20 text-green-300 border border-green-700'
-              : 'bg-red-900/20 text-red-300 border border-red-700'
+              ? 'border border-green-700 bg-green-900/20 text-green-300'
+              : 'border border-red-700 bg-red-900/20 text-red-300'
           }`}
         >
           {message}
