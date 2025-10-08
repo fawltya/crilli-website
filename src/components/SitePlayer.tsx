@@ -105,7 +105,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   return (
     <PlayerContext.Provider value={value}>
       {children}
-      {/* Fixed bottom player UI */}
       <div className="fixed bottom-0 left-0 right-0 z-50">
         <audio ref={audioRef} className="hidden" preload="none" />
         {current ? (

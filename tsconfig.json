@@ -33,14 +33,19 @@
       ]
     },
     "target": "ES2022",
-    "types": ["node"],
-    "typeRoots": ["./node_modules/@types"]
+    "types": [
+      "node"
+    ],
+    "typeRoots": [
+      "./node_modules/@types"
+    ]
   },
   "include": [
-    "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "next-env.d.ts",
+    "./.next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"
