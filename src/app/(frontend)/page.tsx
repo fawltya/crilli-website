@@ -7,6 +7,7 @@ import './styles.css'
 import EventCard from '@/components/eventCard'
 import PodcastCard from '@/components/podcastCard'
 import ScrollButton from '@/components/ScrollButton'
+import AnimatedSection from '@/components/AnimatedSection'
 import type { Event, Media, Venue, Podcast } from '@/payload-types'
 import { Button } from '@/components/ui/button'
 import Footer from '@/components/Footer'
@@ -168,14 +169,16 @@ export default async function HomePage() {
 
       <main className="bg-crilli-900 text-crilli-50 font-main px-8 py-20 uppercase lg:px-20">
         <div className="container mx-auto max-w-7xl">
-          <div className="relative flex flex-col items-center justify-center">
-            <Image
-              src={buildMediaSrc('/api/media/file/Crilli%20Logo%20est%20belf.png')}
-              alt="Crilli DnB Belfast Logo"
-              width={400}
-              height={300}
-              priority
-            />
+          <AnimatedSection className="relative flex flex-col items-center justify-center">
+            <div>
+              <Image
+                src={buildMediaSrc('/api/media/file/Crilli%20Logo%20est%20belf.png')}
+                alt="Crilli DnB Belfast Logo"
+                width={400}
+                height={300}
+                priority
+              />
+            </div>
             <div className="max-w-4xl pt-10 text-center">
               <p className="mb-4">
                 Established in 2005, <strong>Crilli</strong> is a Drum & Bass + Jungle promotion
@@ -187,14 +190,23 @@ export default async function HomePage() {
                 MArky the pleasure of experiencing beautiful Belfast audiences.
               </p>
             </div>
-          </div>
+          </AnimatedSection>
           {/* Events */}
-          <div id="events">
-            <h2 className="text-crilli-50 mt-20 mb-6 text-center text-xl font-semibold md:text-left">
-              Upcoming Events
-            </h2>
-          </div>
-          <div className="grid auto-rows-fr grid-cols-1 justify-items-center gap-10 gap-y-15 md:grid-cols-3 md:justify-items-start">
+          <AnimatedSection className="mt-20" animationType="fadeInUp" delay={0.3} trigger="#events">
+            <div id="events">
+              <h2 className="text-crilli-50 mb-6 text-center text-xl font-semibold md:text-left">
+                Upcoming Events
+              </h2>
+            </div>
+          </AnimatedSection>
+
+          <AnimatedSection
+            className="grid auto-rows-fr grid-cols-1 justify-items-center gap-10 gap-y-15 md:grid-cols-3 md:justify-items-start"
+            animationType="fadeInUp"
+            stagger={0.1}
+            delay={0.5}
+            trigger="#events"
+          >
             {upcomingEvents.length > 0 ? (
               upcomingEvents.map((event) => (
                 <EventCard key={`${event.source}-${event.id}`} event={event} />
@@ -205,13 +217,19 @@ export default async function HomePage() {
                 <p className="text-crilli-400 mt-2 text-sm">Check back soon for more events.</p>
               </div>
             )}
-          </div>
-          <div className="mt-8">
+          </AnimatedSection>
+          <AnimatedSection className="mt-8" animationType="fadeInUp" delay={0.7} trigger="#events">
             <Button asChild variant="outline">
               <Link href="/previous-events">See Previous Events</Link>
             </Button>
-          </div>
-          <div className="mt-16 w-full">
+          </AnimatedSection>
+
+          <AnimatedSection
+            className="mt-16 w-full"
+            animationType="scaleIn"
+            delay={0.9}
+            trigger="#events"
+          >
             <Image
               src={buildMediaSrc('/api/media/file/Crilli%20DnB%20-%20Kev.jpg')}
               alt="Crilli DnB promotional image"
@@ -220,14 +238,27 @@ export default async function HomePage() {
               height={400}
               priority
             />
-          </div>
+          </AnimatedSection>
           {/* Podcasts */}
-          <div id="podcasts">
-            <h2 className="text-crilli-50 mt-20 mb-4 text-center text-xl font-semibold md:text-left">
-              Latest Podcasts
-            </h2>
-          </div>
-          <div className="relative flex flex-col gap-1">
+          <AnimatedSection
+            className="mt-20"
+            animationType="fadeInUp"
+            delay={0.2}
+            trigger="#podcasts"
+          >
+            <div id="podcasts">
+              <h2 className="text-crilli-50 mb-4 text-center text-xl font-semibold md:text-left">
+                Latest Podcasts
+              </h2>
+            </div>
+          </AnimatedSection>
+
+          <AnimatedSection
+            className="relative flex flex-col gap-1"
+            animationType="fadeInLeft"
+            delay={0.4}
+            trigger="#podcasts"
+          >
             <div className="scrollbar-hide overflow-x-auto" id="podcast-scroll">
               <div className="flex min-w-max gap-6 pb-4">
                 {sortedPodcasts.map((podcast) => (
@@ -239,7 +270,7 @@ export default async function HomePage() {
             </div>
             {/* Scroll Right Button */}
             <ScrollButton containerId="podcast-scroll" />
-          </div>
+          </AnimatedSection>
           {/* Footer */}
           <Footer />
         </div>

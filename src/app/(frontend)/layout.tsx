@@ -1,6 +1,8 @@
 import React from 'react'
 import './styles.css'
 import { PlayerProvider } from '@/components/SitePlayer'
+import SmoothScroll from '@/components/SmoothScroll'
+import ScrollToTop from '@/components/ScrollToTop'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
@@ -24,6 +26,8 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
         <PlayerProvider>
           <main>{children}</main>
         </PlayerProvider>
+        <SmoothScroll />
+        <ScrollToTop />
         <Analytics />
         <SpeedInsights />
       </body>

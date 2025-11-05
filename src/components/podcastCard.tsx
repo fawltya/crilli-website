@@ -1,5 +1,7 @@
 'use client'
 import Image from 'next/image'
+import { useRef } from 'react'
+import { gsap } from 'gsap'
 import { buildMediaSrc } from '@/lib/utils'
 import { usePlayer } from '@/components/SitePlayer'
 import { Play, Pause } from '@phosphor-icons/react'
@@ -18,18 +20,54 @@ export default function PodcastCard({ podcast }: { podcast: PodcastCardProps['po
   const { setTrack, isCurrentTrack, isPlaying, togglePlay } = usePlayer()
   const isCurrentlyPlaying = podcast.audioUrl ? isCurrentTrack(podcast.audioUrl) : false
   const showPlayControls = isCurrentlyPlaying && isPlaying
+  const cardRef = useRef<HTMLDivElement>(null)
+  const imageRef = useRef<HTMLDivElement>(null)
 
-  // const isFree = !podcast.price || podcast.price.trim() === '0' || podcast.price.toLowerCase() === 'free'
-  // const dateObj = new Date(podcast.date)
-  // const dateStr = dateObj.toLocaleDateString('en-GB', {
-  // weekday: 'short',
-  //   day: '2-digit',
-  //   month: 'short',
-  //   year: 'numeric',
-  // })
+  const handleMouseEnter = () => {
+    if (cardRef.current && imageRef.current) {
+      const tl = gsap.timeline()
+
+      // Card lift effect
+      tl.to(cardRef.current, {
+        y: -1,
+        duration: 0.3,
+        ease: 'power2.out',
+      })
+
+      // Image scale
+      tl.to(
+        imageRef.current,
+        {
+          scale: 1.01,
+          duration: 0.3,
+          ease: 'power2.out',
+        },
+        0,
+      )
+    }
+  }
+
+  const handleMouseLeave = () => {
+    if (cardRef.current && imageRef.current) {
+      const tl = gsap.timeline()
+
+      // Reset all animations
+      tl.to([cardRef.current, imageRef.current], {
+        y: 0,
+        scale: 1,
+        duration: 0.3,
+        ease: 'power2.out',
+      })
+    }
+  }
 
   return (
-    <div className="relative flex h-full w-full max-w-md flex-col justify-between overflow-hidden px-7 pt-7 pb-6 shadow-lg">
+    <div
+      ref={cardRef}
+      className="relative flex h-full w-full max-w-md flex-col justify-between overflow-hidden px-7 pt-7 pb-6 shadow-lg"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       {/* --- Corner Border Overlay --- */}
       <div className="pointer-events-none absolute inset-0">
         {/* top-left */}
@@ -47,7 +85,7 @@ export default function PodcastCard({ podcast }: { podcast: PodcastCardProps['po
       </div>
 
       {/* --- Image --- */}
-      <div className="group relative aspect-[1/1] w-full overflow-visible">
+      <div ref={imageRef} className="group relative aspect-[1/1] w-full overflow-visible">
         <button
           type="button"
           onClick={() => {
@@ -71,7 +109,7 @@ export default function PodcastCard({ podcast }: { podcast: PodcastCardProps['po
             src={buildMediaSrc(podcast.posterImage.url)}
             alt={`${podcast.artist} podcast artwork`}
             fill
-            className="aspect-square object-cover"
+            className="aspect-square cursor-pointer object-cover"
             sizes="(max-width: 768px) 100vw, 400px"
             loading="lazy"
             placeholder="blur"
@@ -79,13 +117,13 @@ export default function PodcastCard({ podcast }: { podcast: PodcastCardProps['po
           />
 
           {showPlayControls && (
-            <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/20 backdrop-blur-md backdrop-opacity-30">
+            <div className="absolute inset-0 z-10 flex cursor-pointer items-center justify-center bg-black/20 backdrop-blur-md backdrop-opacity-30">
               <Pause className="h-16 w-16 text-white drop-shadow-lg" weight="fill" />
             </div>
           )}
 
           {!showPlayControls && (
-            <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/20 opacity-0 backdrop-blur-md backdrop-opacity-40 transition-opacity duration-200 group-hover:opacity-100">
+            <div className="absolute inset-0 z-10 flex cursor-pointer items-center justify-center bg-black/20 opacity-0 backdrop-blur-md backdrop-opacity-40 transition-opacity duration-200 group-hover:opacity-100">
               <Play className="h-16 w-16 text-white drop-shadow-lg" weight="fill" />
             </div>
           )}
