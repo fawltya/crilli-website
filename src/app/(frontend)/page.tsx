@@ -1,4 +1,3 @@
-// import { headers as getHeaders } from 'next/headers.js'
 import Image from 'next/image'
 import { getPayload } from 'payload'
 import Link from 'next/link'
@@ -8,9 +7,8 @@ import EventCard from '@/components/eventCard'
 import PodcastCard from '@/components/podcastCard'
 import ScrollButton from '@/components/ScrollButton'
 import AnimatedSection from '@/components/AnimatedSection'
-import type { Event, Media, Venue, Podcast } from '@/payload-types'
+import type { Event, Media, Venue, Podcast, PosterArtist } from '@/payload-types'
 import { Button } from '@/components/ui/button'
-import Footer from '@/components/Footer'
 import { buildMediaSrc } from '@/lib/utils'
 import { generateEventsStructuredData } from '@/lib/structuredData'
 
@@ -19,7 +17,6 @@ export const metadata = {
   description: 'Established in 2005 Crilli is a Drum & Bass + Jungle promotion based in Belfast.',
 }
 
-// Avoid prerendering DB queries at build time
 export const dynamic = 'force-dynamic'
 
 interface CombinedEvent {
@@ -39,26 +36,20 @@ interface CombinedEvent {
 }
 
 export default async function HomePage() {
-  // const headers = await getHeaders()
   const payloadConfig = await config
   const payload = await getPayload({ config: payloadConfig })
 
-  // Fetch CMS events
   const { docs: cmsEvents } = await payload.find({
     collection: 'events',
     depth: 2,
-    limit: 1000, // High limit to fetch all events
+    limit: 1000,
   })
 
-  // Fetch Ticket Tailor events
-  // const ticketTailorEvents = await getTicketTailorEvents()
-
-  // Combine and transform events
   const combinedEvents: CombinedEvent[] = [
     ...cmsEvents.map((event: Event) => {
       const posterImage = event.posterImage as Media
       const venue = event.venue as Venue
-      const posterArtist = event.posterArtist as any
+      const posterArtist = event.posterArtist as PosterArtist | null | undefined
 
       return {
         id: String(event.id),
@@ -81,45 +72,12 @@ export default async function HomePage() {
         source: 'cms' as const,
       }
     }),
-    // ...ticketTailorEvents.map((event) => {
-    //   // Extract city from address or use a default
-    //   let city = 'Belfast' // Default city
-    //   if (event.venue?.address) {
-    //     const addressParts = event.venue.address.split(',')
-    //     const lastPart = addressParts[addressParts.length - 1]?.trim()
-    //     if (lastPart) {
-    //       city = lastPart
-    //     }
-    //   }
-
-    //   // Get the first available image URL
-    //   const imageUrl = event.image_url || event.images?.header || ''
-
-    //   // Get the first ticket type price or default to '0'
-    //   const price = event.ticket_types?.[0]?.price?.toString() || '0'
-
-    //   return {
-    //     id: event.id,
-    //     title: event.name,
-    //     date: event.start?.iso || new Date().toISOString(),
-    //     posterImage: { url: imageUrl },
-    //     venue: {
-    //       name: event.venue?.name || 'Unknown Venue',
-    //       city: city,
-    //     },
-    //     price: price,
-    //     eventLink: event.checkout_url,
-    //     source: 'tickettailor' as const,
-    //   }
-    // }),
   ]
 
-  // Sort events by date
   const sortedEvents = combinedEvents.sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
   )
 
-  // Filter events to only show today or future events
   const today = new Date()
   today.setHours(0, 0, 0, 0)
 
@@ -129,7 +87,6 @@ export default async function HomePage() {
     return eventDate >= today
   })
 
-  // Fetch Podcasts
   const { docs: cmsPodcasts } = await payload.find({
     collection: 'podcasts',
     depth: 1,
@@ -149,17 +106,15 @@ export default async function HomePage() {
   })
 
   const sortedPodcasts = podcastsForUi.sort((a, b) => {
-    // Convert "2025/01" format to numeric values for proper sorting
     const numA = parseInt(a.date.replace('/', ''))
     const numB = parseInt(b.date.replace('/', ''))
-    return numB - numA // Sort descending (newest first)
+    return numB - numA
   })
 
   const upcomingEventsStructuredData = generateEventsStructuredData(upcomingEvents)
 
   return (
     <>
-      {/* Structured Data for Events */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -191,7 +146,6 @@ export default async function HomePage() {
               </p>
             </div>
           </AnimatedSection>
-          {/* Events */}
           <AnimatedSection className="mt-20" animationType="fadeInUp" delay={0.3} trigger="#events">
             <div id="events">
               <h2 className="text-crilli-50 mb-6 text-center text-xl font-semibold md:text-left">
@@ -239,7 +193,6 @@ export default async function HomePage() {
               priority
             />
           </AnimatedSection>
-          {/* Podcasts */}
           <AnimatedSection
             className="mt-20"
             animationType="fadeInUp"
@@ -268,11 +221,8 @@ export default async function HomePage() {
                 ))}
               </div>
             </div>
-            {/* Scroll Right Button */}
             <ScrollButton containerId="podcast-scroll" />
           </AnimatedSection>
-          {/* Footer */}
-          <Footer />
         </div>
       </main>
     </>
