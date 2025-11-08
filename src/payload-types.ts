@@ -587,6 +587,10 @@ export interface Order {
   status?: OrderStatus;
   amount?: number | null;
   currency?: 'GBP' | null;
+  /**
+   * The order ID returned from Inkthreadable API
+   */
+  inkthreadableOrderId?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1038,6 +1042,7 @@ export interface OrdersSelect<T extends boolean = true> {
   status?: T;
   amount?: T;
   currency?: T;
+  inkthreadableOrderId?: T;
   updatedAt?: T;
   createdAt?: T;
 }

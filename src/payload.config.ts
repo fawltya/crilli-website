@@ -540,6 +540,25 @@ export default buildConfig({
           }
         },
       },
+      orders: {
+        ordersCollectionOverride: ({ defaultCollection }) => {
+          return {
+            ...defaultCollection,
+            fields: [
+              ...defaultCollection.fields,
+              {
+                name: 'inkthreadableOrderId',
+                type: 'text',
+                label: 'Inkthreadable Order ID',
+                admin: {
+                  description: 'The order ID returned from Inkthreadable API',
+                  readOnly: true,
+                },
+              },
+            ],
+          }
+        },
+      },
     }),
   ],
 })

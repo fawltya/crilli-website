@@ -1,5 +1,7 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import { useEffect, useState, useMemo } from 'react'
 import { useCart } from '@payloadcms/plugin-ecommerce/client/react'
 import Image from 'next/image'
@@ -191,7 +193,6 @@ export default function CartPage() {
                 const itemTotal = price
 
                 const itemIdString = (item as any).visualKey || item.id || `item-${Math.random()}`
-                const itemId = item.id
 
                 if (!product) {
                   console.warn('Cart item missing product data:', {

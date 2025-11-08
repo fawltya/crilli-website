@@ -1,12 +1,27 @@
 import { withPayload } from '@payloadcms/next/withPayload'
 import { createRequire } from 'module'
+import { fileURLToPath } from 'url'
+import { dirname, resolve } from 'path'
 import webpack from 'webpack'
 
 const require = createRequire(import.meta.url)
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  webpack: (config) => {
+  outputFileTracingRoot: resolve(__dirname),
+  outputFileTracingExcludes: {
+    '*': [
+      'node_modules/@swc/core-linux-x64-gnu',
+      'node_modules/@swc/core-linux-x64-musl',
+      'node_modules/@esbuild/linux-x64',
+    ],
+  },
+  experimental: {
+    serverComponentsExternalPackages: [],
+  },
+  webpack: (config, { isServer }) => {
     config.externals = config.externals || []
     config.externals.push('cloudflare:sockets')
     config.externals.push('pg-native')
@@ -27,16 +42,18 @@ const nextConfig = {
     // Ensure aliases are checked before other resolution strategies
     config.resolve.preferRelative = false
 
+    // file-type is patched via pnpm patch to add fileTypeFromFile and fileTypeFromBuffer exports
+    // No webpack alias needed - the patch handles ESM exports via index.mjs
+
     // Add aliases for subpath exports (needed for client-side bundles)
-    const path = require('path')
     const fs = require('fs')
 
     // Ecommerce plugin - client/react and rsc
     // Resolve main package, then construct path to subpath export
     const ecommerceMainPath = require.resolve('@payloadcms/plugin-ecommerce')
-    const ecommerceDistDir = path.dirname(ecommerceMainPath)
-    const ecommerceReactPath = path.resolve(ecommerceDistDir, 'exports/client/react.js')
-    const ecommerceRscPath = path.resolve(ecommerceDistDir, 'exports/rsc.js')
+    const ecommerceDistDir = dirname(ecommerceMainPath)
+    const ecommerceReactPath = resolve(ecommerceDistDir, 'exports/client/react.js')
+    const ecommerceRscPath = resolve(ecommerceDistDir, 'exports/rsc.js')
 
     // Verify file exists and use absolute path
     if (fs.existsSync(ecommerceReactPath)) {
@@ -74,7 +91,7 @@ const nextConfig = {
 
     // Ecommerce plugin - client (base client export)
     // The client export is actually at exports/client/index.js, not exports/client.js
-    const ecommerceClientIndexPath = path.resolve(ecommerceDistDir, 'exports/client/index.js')
+    const ecommerceClientIndexPath = resolve(ecommerceDistDir, 'exports/client/index.js')
     if (fs.existsSync(ecommerceClientIndexPath)) {
       config.resolve.alias['@payloadcms/plugin-ecommerce/client'] = ecommerceClientIndexPath
 
@@ -94,8 +111,8 @@ const nextConfig = {
 
     // SEO plugin - client
     const seoMainPath = require.resolve('@payloadcms/plugin-seo')
-    const seoDistDir = path.dirname(seoMainPath)
-    const seoClientPath = path.resolve(seoDistDir, 'exports/client.js')
+    const seoDistDir = dirname(seoMainPath)
+    const seoClientPath = resolve(seoDistDir, 'exports/client.js')
 
     if (fs.existsSync(seoClientPath)) {
       config.resolve.alias['@payloadcms/plugin-seo/client'] = seoClientPath
@@ -114,8 +131,8 @@ const nextConfig = {
 
     // Vercel Blob Storage plugin - client
     const vercelBlobMainPath = require.resolve('@payloadcms/storage-vercel-blob')
-    const vercelBlobDistDir = path.dirname(vercelBlobMainPath)
-    const vercelBlobClientPath = path.resolve(vercelBlobDistDir, 'exports/client.js')
+    const vercelBlobDistDir = dirname(vercelBlobMainPath)
+    const vercelBlobClientPath = resolve(vercelBlobDistDir, 'exports/client.js')
 
     if (fs.existsSync(vercelBlobClientPath)) {
       config.resolve.alias['@payloadcms/storage-vercel-blob/client'] = vercelBlobClientPath
@@ -133,35 +150,6 @@ const nextConfig = {
         'Warning: Could not find @payloadcms/storage-vercel-blob/client at:',
         vercelBlobClientPath,
       )
-    }
-
-    // Ensure SCSS files are handled correctly
-    // Modify SCSS loader rules to include Payload CMS packages
-    if (config.module && config.module.rules) {
-      config.module.rules.forEach((rule) => {
-        if (rule.oneOf) {
-          rule.oneOf.forEach((oneOfRule) => {
-            if (oneOfRule.test && oneOfRule.test.toString().includes('scss')) {
-              // Don't exclude Payload CMS packages from SCSS processing
-              if (oneOfRule.exclude) {
-                if (typeof oneOfRule.exclude === 'function') {
-                  const originalExclude = oneOfRule.exclude
-                  oneOfRule.exclude = (path) => {
-                    if (path && path.includes && path.includes('@payloadcms')) {
-                      return false
-                    }
-                    return originalExclude(path)
-                  }
-                } else if (Array.isArray(oneOfRule.exclude)) {
-                  oneOfRule.exclude = oneOfRule.exclude.filter(
-                    (item) => typeof item !== 'string' || !item.includes('@payloadcms'),
-                  )
-                }
-              }
-            }
-          })
-        }
-      })
     }
 
     return config
@@ -205,7 +193,7 @@ const nextConfig = {
         .resolve('@payloadcms/storage-vercel-blob')
         .replace('/dist/index.js', '/dist/exports/client.js'),
     },
-    resolveExtensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
+    resolveExtensions: ['.js', '.jsx', '.ts', '.tsx', '.json', '.mjs'],
   },
 
   images: {
@@ -224,13 +212,14 @@ const nextConfig = {
       '@radix-ui/react-slot',
     ],
   },
-  // Moved from experimental.serverComponentsExternalPackages
-  // Note: Don't externalize these if they have SCSS dependencies
-  // serverExternalPackages: [
-  //   '@payloadcms/plugin-seo',
-  //   '@payloadcms/plugin-ecommerce',
-  //   '@payloadcms/storage-vercel-blob',
-  // ],
+  serverExternalPackages: [
+    'payload',
+    '@payloadcms/db-vercel-postgres',
+    'sharp',
+    'file-type',
+  ],
 }
 
-export default withPayload(nextConfig, { devBundleServerPackages: false })
+export default withPayload(nextConfig, { 
+  devBundleServerPackages: false,
+})

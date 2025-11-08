@@ -9,6 +9,8 @@ import CartProvider from '@/components/CartProvider'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
   description: 'Established in 2005, Crilli is a Drum & Bass + Jungle promotion based in Belfast.',
   title: 'Crilli DnB Belfast',
@@ -25,7 +27,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
         <link rel="preconnect" href="https://uploads.tickettailor.com" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
       </head>
-      <body className="font-main">
+      <body>
         <CartProvider>
           <PlayerProvider>
             <Header />

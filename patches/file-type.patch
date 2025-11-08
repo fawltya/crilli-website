@@ -1,0 +1,89 @@
+diff --git a/index.d.ts b/index.d.ts
+index 30c8eff5b571aec2bb1e1195a445ff22a1aca6b9..685230099ef5057d65825d94652ee0ba8fca4ff7 100644
+--- a/index.d.ts
++++ b/index.d.ts
+@@ -17,6 +17,10 @@ The file type is detected by checking the [magic number](https://en.wikipedia.or
+ */
+ export function fromFile(path: string): Promise<core.FileTypeResult | undefined>;
+ 
++// Aliases for Payload CMS compatibility
++export { fromFile as fileTypeFromFile };
++export { fromBuffer as fileTypeFromBuffer };
++
+ export {
+ 	fromBuffer,
+ 	fromStream,
+diff --git a/index.js b/index.js
+index 2c42ac0e276e70705274d48fcee7499abf29f4c1..cec0028f480f079d49505b33cc9e54308bcb8cf0 100644
+--- a/index.js
++++ b/index.js
+@@ -12,11 +12,16 @@ async function fromFile(path) {
+ }
+ 
+ const fileType = {
+-	fromFile
++	fromFile,
++	// Add fileTypeFromFile alias for Payload CMS compatibility (must be in object literal for ESM named exports)
++	fileTypeFromFile: fromFile
+ };
+ 
+ Object.assign(fileType, core);
+ 
++// Add fileTypeFromBuffer alias for Payload CMS compatibility
++fileType.fileTypeFromBuffer = fileType.fromBuffer;
++
+ Object.defineProperty(fileType, 'extensions', {
+ 	get() {
+ 		return core.extensions;
+diff --git a/index.mjs b/index.mjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..d4f0804828bf33d8f05add0358919824b95a36e1
+--- /dev/null
++++ b/index.mjs
+@@ -0,0 +1,20 @@
++// ESM wrapper for file-type CommonJS module
++import { createRequire } from 'module';
++const require = createRequire(import.meta.url);
++const fileType = require('./index.js');
++
++// Re-export everything as named exports
++export const fromFile = fileType.fromFile;
++export const fileTypeFromFile = fileType.fileTypeFromFile || fileType.fromFile;
++export const fromBuffer = fileType.fromBuffer;
++// Explicitly export fileTypeFromBuffer - webpack needs this for static analysis
++export const fileTypeFromBuffer = fileType.fileTypeFromBuffer || fileType.fromBuffer;
++export const fromStream = fileType.fromStream;
++export const fromTokenizer = fileType.fromTokenizer;
++export const extensions = fileType.extensions;
++export const mimeTypes = fileType.mimeTypes;
++export const stream = fileType.stream;
++
++// Also export as default
++export default fileType;
++
+diff --git a/package.json b/package.json
+index 82b840b01f6aa6e306407bee48df39da14b20282..9c7536f2082adefe44e72a019085c0dfdf5ac40d 100644
+--- a/package.json
++++ b/package.json
+@@ -3,6 +3,13 @@
+ 	"version": "16.5.4",
+ 	"description": "Detect the file type of a Buffer/Uint8Array/ArrayBuffer",
+ 	"license": "MIT",
++	"exports": {
++		".": {
++			"import": "./index.mjs",
++			"require": "./index.js",
++			"types": "./index.d.ts"
++		}
++	},
+ 	"repository": "sindresorhus/file-type",
+ 	"funding": "https://github.com/sindresorhus/file-type?sponsor=1",
+ 	"author": {
+@@ -19,6 +26,7 @@
+ 	},
+ 	"files": [
+ 		"index.js",
++		"index.mjs",
+ 		"index.d.ts",
+ 		"browser.js",
+ 		"browser.d.ts",

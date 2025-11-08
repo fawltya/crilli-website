@@ -6,7 +6,7 @@ import { createInkthreadableOrder } from '@/lib/inkthreadable'
 import { sendTransactionalEmail } from '@/lib/sender'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2024-12-18.acacia',
+  apiVersion: '2025-10-29.clover',
 })
 
 export async function POST(request: NextRequest) {
@@ -74,8 +74,14 @@ export async function POST(request: NextRequest) {
 
       console.log('[Webhook] Order found:', order.id)
 
-      const shippingDetails = session.shipping_details
-      const customerEmail = session.customer_email || session.customer_details?.email
+      // Access shipping details - property name may vary by API version
+      // Type assertion needed as Stripe types may not include all properties
+      const sessionWithShipping = session as Stripe.Checkout.Session & { 
+        shipping?: any;
+        shipping_details?: any;
+      }
+      const shippingDetails = sessionWithShipping.shipping || sessionWithShipping.shipping_details || null
+      const customerEmail: string | undefined = (session.customer_email || session.customer_details?.email) ?? undefined
 
       console.log('[Webhook] Shipping details:', JSON.stringify(shippingDetails, null, 2))
       console.log('[Webhook] Customer email:', customerEmail)
@@ -159,16 +165,16 @@ export async function POST(request: NextRequest) {
       if (orderId) {
         const order = await payload.findByID({
           collection: 'orders',
-          id: orderId,
+          id: typeof orderId === 'string' ? parseInt(orderId, 10) : orderId,
           depth: 2,
         })
 
         if (order) {
           await payload.update({
             collection: 'orders',
-            id: orderId,
+            id: typeof orderId === 'string' ? parseInt(orderId, 10) : orderId,
             data: {
-              status: 'paid',
+              status: 'completed',
             },
           })
         }
