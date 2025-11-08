@@ -1,15 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server'
-import Stripe from 'stripe'
 import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { createInkthreadableOrder } from '@/lib/inkthreadable'
 import { sendTransactionalEmail } from '@/lib/sender'
+import Stripe from 'stripe'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2025-10-29.clover',
-})
+const stripeApiVersion: Stripe.StripeConfig['apiVersion'] = '2025-10-29.clover'
+let stripeClient: Stripe | null = null
+
+function getStripeClient() {
+  if (stripeClient) {
+    return stripeClient
+  }
+
+  const secretKey = process.env.STRIPE_SECRET_KEY
+  if (!secretKey) {
+    throw new Error('STRIPE_SECRET_KEY is not configured')
+  }
+
+  stripeClient = new Stripe(secretKey, { apiVersion: stripeApiVersion })
+  return stripeClient
+}
 
 export async function POST(request: NextRequest) {
+  let stripe: Stripe
+  try {
+    stripe = getStripeClient()
+  } catch (error) {
+    console.error('Stripe client initialization failed:', error)
+    return NextResponse.json(
+      { error: 'Stripe client not configured', details: (error as Error).message },
+      { status: 500 },
+    )
+  }
   const body = await request.text()
   const signature = request.headers.get('stripe-signature')
 
@@ -197,4 +220,3 @@ export async function POST(request: NextRequest) {
     )
   }
 }
-
