@@ -7,8 +7,8 @@
   "packageManager": "pnpm@10.10.0",
   "scripts": {
     "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
-    "dev": "cross-env NODE_OPTIONS=--no-deprecation PAYLOAD_PATCH_TURBOPACK_WARNINGS=false next dev --no-server-fast-refresh",
-    "devsafe": "rm -rf .next && cross-env NODE_OPTIONS=--no-deprecation next dev --no-server-fast-refresh",
+    "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
+    "devsafe": "rm -rf .next && cross-env NODE_OPTIONS=--no-deprecation next dev",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "lint": "cross-env NODE_OPTIONS=--no-deprecation next lint",
