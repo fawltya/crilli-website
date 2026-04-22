@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { isSubscribeRateLimited } from '@/lib/subscribeRateLimit'
 
-// Simple in-memory rate limiting (for production, consider Redis)
-const rateLimitMap = new Map<string, { count: number; resetTime: number }>()
+function getSubscribeGroupIds(): string[] {
+  const raw = process.env.SENDER_SUBSCRIBE_GROUP_IDS || process.env.SENDER_SUBSCRIBE_GROUP_ID
+  if (raw) {
+    return raw.split(',').map((s) => s.trim()).filter(Boolean)
+  }
+  return ['b2J7Zj']
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,43 +20,22 @@ export async function POST(request: NextRequest) {
 
     // Honeypot check - if filled, it's likely a bot
     if (honeypot) {
-      console.log('Bot detected via honeypot:', { email, honeypot, clientIP })
+      console.log('Bot detected via honeypot:', { honeypot, clientIP })
       return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
     }
 
-    // Rate limiting - max 3 requests per IP per 15 minutes
-    const now = Date.now()
-    const windowMs = 15 * 60 * 1000 // 15 minutes
-    const maxRequests = 3
-
-    const rateLimitKey = `rate_limit_${clientIP}`
-    const rateLimitData = rateLimitMap.get(rateLimitKey)
-
-    if (rateLimitData) {
-      if (now < rateLimitData.resetTime) {
-        if (rateLimitData.count >= maxRequests) {
-          console.log('Rate limit exceeded:', { clientIP, email })
-          return NextResponse.json(
-            { error: 'Too many requests. Please try again later.' },
-            { status: 429 },
-          )
-        }
-        rateLimitData.count++
-      } else {
-        // Reset the window
-        rateLimitMap.set(rateLimitKey, { count: 1, resetTime: now + windowMs })
-      }
-    } else {
-      rateLimitMap.set(rateLimitKey, { count: 1, resetTime: now + windowMs })
+    if (await isSubscribeRateLimited(clientIP)) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please try again later.' },
+        { status: 429 },
+      )
     }
 
     // Basic timing check - if form submitted too quickly, might be a bot
     if (timestamp && Date.now() - timestamp < 1000) {
-      console.log('Suspicious timing detected:', {
-        email,
-        clientIP,
-        timeDiff: Date.now() - timestamp,
-      })
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Suspicious timing detected:', { clientIP, timeDiff: Date.now() - timestamp })
+      }
       return NextResponse.json(
         { error: 'Please wait a moment before submitting.' },
         { status: 400 },
@@ -85,7 +70,9 @@ export async function POST(request: NextRequest) {
     ]
 
     if (suspiciousPatterns.some((pattern) => pattern.test(email))) {
-      console.log('Suspicious email pattern detected:', { email, clientIP })
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Suspicious email pattern detected:', { clientIP })
+      }
       return NextResponse.json({ error: 'Please enter a valid email address' }, { status: 400 })
     }
 
@@ -105,7 +92,9 @@ export async function POST(request: NextRequest) {
 
     const emailDomain = email.split('@')[1]?.toLowerCase()
     if (disposableDomains.includes(emailDomain)) {
-      console.log('Disposable email detected:', { email, clientIP })
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Disposable email detected:', { clientIP })
+      }
       return NextResponse.json({ error: 'Please use a permanent email address' }, { status: 400 })
     }
 
@@ -114,6 +103,8 @@ export async function POST(request: NextRequest) {
       console.error('SENDER_NET_API_KEY is not configured')
       return NextResponse.json({ error: 'Service configuration error' }, { status: 500 })
     }
+
+    const groupIds = getSubscribeGroupIds()
 
     // Call Sender.net API
     const senderResponse = await fetch('https://api.sender.net/v2/subscribers', {
@@ -124,7 +115,7 @@ export async function POST(request: NextRequest) {
       },
       body: JSON.stringify({
         email: email,
-        groups: ['b2J7Zj'], // Add to specific group
+        groups: groupIds,
         trigger_automation: true, // Enable automation triggers
       }),
     })
@@ -132,11 +123,14 @@ export async function POST(request: NextRequest) {
     const senderData = await senderResponse.json()
 
     if (!senderResponse.ok) {
-      console.error('Sender.net API error:', {
-        status: senderResponse.status,
-        statusText: senderResponse.statusText,
-        data: senderData,
-      })
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Sender.net API error:', {
+          status: senderResponse.status,
+          statusText: senderResponse.statusText,
+        })
+      } else {
+        console.error('Sender.net API error:', senderResponse.status, senderResponse.statusText)
+      }
 
       // Handle specific Sender.net error cases
       if (senderData.message && Array.isArray(senderData.message)) {
@@ -231,7 +225,7 @@ export async function POST(request: NextRequest) {
                     Authorization: `Bearer ${senderApiKey}`,
                   },
                   body: JSON.stringify({
-                    groups: ['b2J7Zj'], // Add to specific group
+                    groups: groupIds,
                   }),
                 },
               )
@@ -252,9 +246,6 @@ export async function POST(request: NextRequest) {
           console.error('Error updating existing subscriber:', updateError)
         }
       }
-
-      // Log the full response for debugging
-      console.log('Full Sender.net response:', JSON.stringify(senderData, null, 2))
 
       return NextResponse.json({ error: 'Failed to subscribe. Please try again.' }, { status: 400 })
     }

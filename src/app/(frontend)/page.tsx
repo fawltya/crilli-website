@@ -131,7 +131,8 @@ export default async function HomePage() {
                 alt="Crilli DnB Belfast Logo"
                 width={400}
                 height={300}
-                className="h-auto w-auto max-w-full"
+                sizes="(max-width: 1024px) 100vw, 400px"
+                className="h-auto w-full max-w-full object-contain"
                 priority
               />
             </div>
@@ -191,6 +192,7 @@ export default async function HomePage() {
               className="h-auto w-full max-w-full overflow-hidden rounded-sm"
               width={1200}
               height={400}
+              // style={{ width: 'auto', height: 'auto' }}
               priority
             />
           </AnimatedSection>

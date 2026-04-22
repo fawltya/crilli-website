@@ -3,7 +3,7 @@ import axios from 'axios'
 const SENDER_API_URL = 'https://api.sender.net/v2'
 const SENDER_API_TOKEN = process.env.SENDER_NET_API_KEY
 const SENDER_CAMPAIGN_ID = process.env.SENDER_CAMPAIGN_ID || 'eg2AVD'
-const SENDER_TEST_EMAIL = process.env.SENDER_TEST_EMAIL || 'seamus0689@gmail.com'
+const SENDER_TEST_EMAIL = process.env.SENDER_TEST_EMAIL || ''
 
 export interface SendEmailParams {
   recipientEmail: string
@@ -28,7 +28,9 @@ export async function sendTransactionalEmail({
 
   // Use test email in development if SENDER_USE_TEST_EMAIL is set
   const emailToUse =
-    process.env.NODE_ENV === 'development' && process.env.SENDER_USE_TEST_EMAIL === 'true'
+    process.env.NODE_ENV === 'development' &&
+    process.env.SENDER_USE_TEST_EMAIL === 'true' &&
+    SENDER_TEST_EMAIL
       ? SENDER_TEST_EMAIL
       : recipientEmail
 
@@ -48,19 +50,19 @@ export async function sendTransactionalEmail({
   }
 
   try {
-    console.log(
-      `[Sender] Sending email to: ${emailToUse}${emailToUse !== recipientEmail ? ` (original: ${recipientEmail})` : ''}`,
-    )
+    if (process.env.NODE_ENV === 'development') {
+      console.log(
+        `[Sender] Sending email to: ${emailToUse}${emailToUse !== recipientEmail ? ` (original: redacted)` : ''}`,
+      )
+    }
     const response = await axios(config)
-    console.log('[Sender] Email sent successfully:', JSON.stringify(response.data, null, 2))
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[Sender] Email sent successfully, status', response.status)
+    }
     return response.data
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.error('[Sender] Error sending email:', {
-        status: error.response?.status,
-        statusText: error.response?.statusText,
-        data: error.response?.data,
-      })
+      console.error('[Sender] Error sending email:', error.response?.status, error.response?.statusText)
       throw new Error(`Sender API error: ${error.response?.statusText || error.message}`)
     }
     throw error

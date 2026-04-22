@@ -32,7 +32,8 @@ export default function Footer({
             alt="Crilli DnB Belfast Logo"
             width={200}
             height={300}
-            className="h-auto w-auto max-w-[200px]"
+            sizes="200px"
+            className="h-auto w-full max-w-[200px] object-contain"
             loading="lazy"
           />
           <div className="md:align-end flex flex-col justify-end gap-4 text-center md:text-right">

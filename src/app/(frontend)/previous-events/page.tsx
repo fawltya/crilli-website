@@ -104,7 +104,9 @@ export default async function PreviousEventsPage() {
               alt="Crilli DnB Belfast Logo"
               width={300}
               height={225}
-              className="h-auto w-auto max-w-full"
+              sizes="(max-width: 1024px) 100vw, 300px"
+              className="h-auto w-full max-w-full object-contain"
+              style={{ width: '100%', height: 'auto' }}
               priority
             />
             <div className="max-w-4xl pt-10 text-center">
