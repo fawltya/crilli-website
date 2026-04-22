@@ -13,20 +13,35 @@ export async function POST(request: NextRequest) {
   try {
     const payload = await getPayload({ config })
     const body = await request.json()
-    const { cartId, shippingAddress } = body
+    const { cartId, cartSecret, shippingAddress } = body
 
     if (!cartId) {
       return NextResponse.json({ error: 'Cart ID is required' }, { status: 400 })
     }
 
-    const cart = (await payload.findByID({
+    if (!cartSecret || typeof cartSecret !== 'string') {
+      return NextResponse.json({ error: 'Invalid checkout request' }, { status: 400 })
+    }
+
+    const cartIdNum = typeof cartId === 'string' ? parseInt(cartId, 10) : Number(cartId)
+    if (!Number.isFinite(cartIdNum)) {
+      return NextResponse.json({ error: 'Invalid checkout request' }, { status: 400 })
+    }
+
+    const cartResult = await payload.find({
       collection: 'carts',
-      id: cartId,
+      where: {
+        and: [{ id: { equals: cartIdNum } }, { secret: { equals: cartSecret } }],
+      },
+      limit: 1,
       depth: 3,
-    })) as Cart
+      overrideAccess: true,
+    })
+
+    const cart = cartResult.docs[0] as Cart | undefined
 
     if (!cart || !cart.items || cart.items.length === 0) {
-      return NextResponse.json({ error: 'Cart is empty' }, { status: 400 })
+      return NextResponse.json({ error: 'Invalid checkout request' }, { status: 403 })
     }
 
     let subtotal = 0
@@ -139,10 +154,7 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error('Error creating Stripe checkout session:', error)
-    return NextResponse.json(
-      { error: 'Failed to create checkout session', details: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 },
-    )
+    return NextResponse.json({ error: 'Failed to create checkout session' }, { status: 500 })
   }
 }
 

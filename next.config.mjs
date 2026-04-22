@@ -224,6 +224,8 @@ const nextConfig = {
       '@radix-ui/react-separator',
       '@radix-ui/react-slot',
     ],
+    /** Avoid noisy "turbopackServerFastRefresh" experimental warning; dev script also passes --no-server-fast-refresh */
+    turbopackServerFastRefresh: false,
   },
   serverExternalPackages: [
     'payload',

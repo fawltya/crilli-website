@@ -4,9 +4,10 @@
   "description": "A blank template to get started with Payload 3.0",
   "license": "MIT",
   "type": "module",
+  "packageManager": "pnpm@10.10.0",
   "scripts": {
     "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
-    "dev": "cross-env NODE_OPTIONS=--no-deprecation PAYLOAD_PATCH_TURBOPACK_WARNINGS=false next dev",
+    "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
     "devsafe": "rm -rf .next && cross-env NODE_OPTIONS=--no-deprecation next dev",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
@@ -18,10 +19,8 @@
   "dependencies": {
     "@gsap/react": "^2.1.2",
     "@headlessui/react": "^2.2.2",
-    "@payloadcms/db-mongodb": "3.84.0",
     "@payloadcms/db-vercel-postgres": "3.84.0",
     "@payloadcms/next": "3.84.0",
-    "@payloadcms/plugin-cloud-storage": "3.84.0",
     "@payloadcms/plugin-ecommerce": "3.84.0",
     "@payloadcms/plugin-seo": "3.84.0",
     "@payloadcms/richtext-lexical": "3.84.0",
@@ -29,9 +28,9 @@
     "@phosphor-icons/react": "^2.1.10",
     "@radix-ui/react-separator": "^1.1.4",
     "@radix-ui/react-slot": "^1.2.0",
-    "@types/react-google-recaptcha": "^2.1.9",
     "@vercel/analytics": "^1.5.0",
     "@vercel/blob": "^1.0.1",
+    "@vercel/kv": "^3.0.0",
     "@vercel/speed-insights": "^1.2.0",
     "axios": "^1.9.0",
     "class-variance-authority": "^0.7.1",
@@ -72,6 +71,15 @@
     "pnpm": "^9 || ^10"
   },
   "pnpm": {
+    "nodeLinker": "hoisted",
+    "packageManagerStrict": true,
+    "autoInstallPeers": true,
+    "publicHoistPattern": [
+      "*@payloadcms*",
+      "*payload*",
+      "*@swc*",
+      "*next*"
+    ],
     "onlyBuiltDependencies": [
       "@vercel/speed-insights",
       "sharp"

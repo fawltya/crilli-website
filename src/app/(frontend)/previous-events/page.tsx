@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import type { Event, Media, Venue } from '@/payload-types'
 import { buildMediaSrc } from '@/lib/utils'
 import { generateEventsStructuredData } from '@/lib/structuredData'
+import AnimatedSection from '@/components/AnimatedSection'
 
 export const metadata = {
   title: 'Previous Events - Crilli DnB Belfast',
@@ -98,15 +99,18 @@ export default async function PreviousEventsPage() {
 
       <main className="bg-crilli-900 text-crilli-50 font-crilli px-8 py-20 uppercase lg:px-20">
         <div className="container mx-auto max-w-7xl">
-          <div className="relative mb-16 flex flex-col items-center justify-center">
-            <Image
-              src={buildMediaSrc('/api/media/file/Crilli%20Logo%20est%20belf.png')}
-              alt="Crilli DnB Belfast Logo"
-              width={300}
-              height={225}
-              className="h-auto w-auto max-w-full"
-              priority
-            />
+          <AnimatedSection className="relative flex flex-col items-center justify-center">
+            <div>
+              <Image
+                src={buildMediaSrc('/api/media/file/Crilli%20Logo%20est%20belf.png')}
+                alt="Crilli DnB Belfast Logo"
+                width={400}
+                height={300}
+                sizes="(max-width: 1024px) 100vw, 400px"
+                className="h-auto w-full max-w-full object-contain"
+                priority
+              />
+            </div>
             <div className="max-w-4xl pt-10 text-center">
               <h1 className="mb-4 text-3xl font-bold">Previous Events</h1>
               <p className="mb-4">
@@ -114,7 +118,7 @@ export default async function PreviousEventsPage() {
                 years...
               </p>
             </div>
-          </div>
+          </AnimatedSection>
 
           <div className="mb-8">
             <Button asChild variant="outline">

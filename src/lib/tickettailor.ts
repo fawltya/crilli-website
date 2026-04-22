@@ -70,10 +70,9 @@ export async function getTicketTailorEvents(
   }
 
   try {
-    console.log('Fetching TicketTailor events...')
-    console.log('API URL:', TICKETTAILOR_API_URL)
-    console.log('API Key:', TICKETTAILOR_API_KEY.substring(0, 10) + '...')
-    console.log('Query params:', params)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Fetching TicketTailor events', { url: TICKETTAILOR_API_URL, params })
+    }
 
     const response = await axios.get(`${TICKETTAILOR_API_URL}/v1/events`, {
       headers: {
@@ -90,16 +89,15 @@ export async function getTicketTailorEvents(
       },
     })
 
-    console.log('TicketTailor API Response:', JSON.stringify(response.data, null, 2))
+    if (process.env.NODE_ENV === 'development') {
+      const n = Array.isArray(response.data?.data) ? response.data.data.length : 0
+      console.log('TicketTailor API: events count', n)
+    }
     return response.data.data
   } catch (error) {
     console.error('Error fetching TicketTailor events:', error)
     if (axios.isAxiosError(error)) {
-      console.error('Response data:', error.response?.data)
-      console.error('Response status:', error.response?.status)
-      console.error('Request URL:', error.config?.url)
-      console.error('Request headers:', error.config?.headers)
-      console.error('Request params:', error.config?.params)
+      console.error('TicketTailor status:', error.response?.status)
     }
     throw error
   }

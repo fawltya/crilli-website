@@ -82,6 +82,12 @@ export default function CheckoutPage() {
         throw new Error('Cart not found')
       }
 
+      const cartSecret =
+        typeof window !== 'undefined' ? window.localStorage.getItem('cart_secret') : null
+      if (!cartSecret) {
+        throw new Error('Your cart session is missing. Return to the shop and try again.')
+      }
+
       const response = await fetch('/api/stripe/create-checkout', {
         method: 'POST',
         headers: {
@@ -89,6 +95,7 @@ export default function CheckoutPage() {
         },
         body: JSON.stringify({
           cartId: cart.id,
+          cartSecret,
           shippingAddress,
         }),
       })

@@ -110,7 +110,14 @@ export default buildConfig({
       access: {
         isAdmin: () => false,
         adminOnlyFieldAccess: () => true,
-        isDocumentOwner: () => true,
+        isDocumentOwner: ({ req }) => {
+          if (!req.user) return false
+          return {
+            customer: {
+              equals: req.user.id,
+            },
+          }
+        },
         adminOrPublishedStatus: () => true,
         customerOnlyFieldAccess: () => false,
       },
@@ -755,20 +762,6 @@ export default buildConfig({
               ],
             }
           },
-        },
-      },
-      carts: {
-        cartsCollectionOverride: ({ defaultCollection }) => {
-          return {
-            ...defaultCollection,
-            access: {
-              read: () => true,
-              create: () => true,
-              update: () => true,
-              delete: () => true,
-              readVersions: () => true,
-            },
-          }
         },
       },
       orders: {

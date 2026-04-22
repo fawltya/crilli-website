@@ -8,6 +8,8 @@ import Stripe from 'stripe'
 const stripeApiVersion: Stripe.StripeConfig['apiVersion'] = '2025-10-29.clover'
 let stripeClient: Stripe | null = null
 
+const verboseWebhookLogs = process.env.VERBOSE_WEBHOOK_LOGS === 'true'
+
 function getStripeClient() {
   if (stripeClient) {
     return stripeClient
@@ -61,22 +63,24 @@ export async function POST(request: NextRequest) {
     const payload = await getPayload({ config })
 
     if (event.type === 'checkout.session.completed') {
-      console.log('[Webhook] Processing checkout.session.completed event')
       const session = event.data.object as Stripe.Checkout.Session
-
-      console.log('[Webhook] Full Stripe session object:', JSON.stringify(session, null, 2))
-
       const metadata = session.metadata || {}
-      console.log('[Webhook] Session metadata:', JSON.stringify(metadata, null, 2))
-
       const orderId = metadata.orderId || session.metadata?.orderId
-      if (!orderId) {
-        console.error('[Webhook] No order ID found in session metadata')
-        console.error('[Webhook] Full session object:', JSON.stringify(session, null, 2))
-        return NextResponse.json({ error: 'Order ID missing' }, { status: 400 })
+
+      console.log('[Webhook] checkout.session.completed', {
+        eventId: event.id,
+        orderId: orderId ?? null,
+        paymentStatus: session.payment_status,
+      })
+
+      if (verboseWebhookLogs) {
+        console.log('[Webhook] verbose session metadata keys:', Object.keys(metadata))
       }
 
-      console.log('[Webhook] Fetching order from Payload:', orderId)
+      if (!orderId) {
+        console.error('[Webhook] No order ID in session metadata', { eventId: event.id })
+        return NextResponse.json({ error: 'Order ID missing' }, { status: 400 })
+      }
 
       let order
       try {
@@ -95,8 +99,6 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'Order not found' }, { status: 404 })
       }
 
-      console.log('[Webhook] Order found:', order.id)
-
       // Access shipping details - property name may vary by API version
       // Type assertion needed as Stripe types may not include all properties
       const sessionWithShipping = session as Stripe.Checkout.Session & { 
@@ -106,8 +108,9 @@ export async function POST(request: NextRequest) {
       const shippingDetails = sessionWithShipping.shipping || sessionWithShipping.shipping_details || null
       const customerEmail: string | undefined = (session.customer_email || session.customer_details?.email) ?? undefined
 
-      console.log('[Webhook] Shipping details:', JSON.stringify(shippingDetails, null, 2))
-      console.log('[Webhook] Customer email:', customerEmail)
+      if (verboseWebhookLogs) {
+        console.log('[Webhook] verbose: hasShipping', Boolean(shippingDetails))
+      }
 
       try {
         const inkthreadableEnabled = process.env.INKTHREADABLE_ENABLED === 'true'
@@ -124,7 +127,9 @@ export async function POST(request: NextRequest) {
           payload,
         })
 
-        console.log('[Webhook] Inkthreadable order created:', JSON.stringify(inkthreadableOrder, null, 2))
+        if (verboseWebhookLogs) {
+          console.log('[Webhook] verbose: inkthreadable order id', inkthreadableOrder.id || inkthreadableOrder.orderId)
+        }
 
         await payload.update({
           collection: 'orders',
