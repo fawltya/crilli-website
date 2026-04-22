@@ -1,4 +1,3 @@
-// import { headers as getHeaders } from 'next/headers.js'
 import Image from 'next/image'
 import { getPayload } from 'payload'
 import Link from 'next/link'
@@ -7,9 +6,9 @@ import './styles.css'
 import EventCard from '@/components/eventCard'
 import PodcastCard from '@/components/podcastCard'
 import ScrollButton from '@/components/ScrollButton'
-import type { Event, Media, Venue, Podcast } from '@/payload-types'
+import AnimatedSection from '@/components/AnimatedSection'
+import type { Event, Media, Venue, Podcast, PosterArtist } from '@/payload-types'
 import { Button } from '@/components/ui/button'
-import Footer from '@/components/Footer'
 import { buildMediaSrc } from '@/lib/utils'
 import { generateEventsStructuredData } from '@/lib/structuredData'
 
@@ -18,7 +17,6 @@ export const metadata = {
   description: 'Established in 2005 Crilli is a Drum & Bass + Jungle promotion based in Belfast.',
 }
 
-// Avoid prerendering DB queries at build time
 export const dynamic = 'force-dynamic'
 
 interface CombinedEvent {
@@ -38,26 +36,20 @@ interface CombinedEvent {
 }
 
 export default async function HomePage() {
-  // const headers = await getHeaders()
   const payloadConfig = await config
   const payload = await getPayload({ config: payloadConfig })
 
-  // Fetch CMS events
   const { docs: cmsEvents } = await payload.find({
     collection: 'events',
     depth: 2,
-    limit: 1000, // High limit to fetch all events
+    limit: 1000,
   })
 
-  // Fetch Ticket Tailor events
-  // const ticketTailorEvents = await getTicketTailorEvents()
-
-  // Combine and transform events
   const combinedEvents: CombinedEvent[] = [
     ...cmsEvents.map((event: Event) => {
       const posterImage = event.posterImage as Media
       const venue = event.venue as Venue
-      const posterArtist = event.posterArtist as any
+      const posterArtist = event.posterArtist as PosterArtist | null | undefined
 
       return {
         id: String(event.id),
@@ -80,45 +72,12 @@ export default async function HomePage() {
         source: 'cms' as const,
       }
     }),
-    // ...ticketTailorEvents.map((event) => {
-    //   // Extract city from address or use a default
-    //   let city = 'Belfast' // Default city
-    //   if (event.venue?.address) {
-    //     const addressParts = event.venue.address.split(',')
-    //     const lastPart = addressParts[addressParts.length - 1]?.trim()
-    //     if (lastPart) {
-    //       city = lastPart
-    //     }
-    //   }
-
-    //   // Get the first available image URL
-    //   const imageUrl = event.image_url || event.images?.header || ''
-
-    //   // Get the first ticket type price or default to '0'
-    //   const price = event.ticket_types?.[0]?.price?.toString() || '0'
-
-    //   return {
-    //     id: event.id,
-    //     title: event.name,
-    //     date: event.start?.iso || new Date().toISOString(),
-    //     posterImage: { url: imageUrl },
-    //     venue: {
-    //       name: event.venue?.name || 'Unknown Venue',
-    //       city: city,
-    //     },
-    //     price: price,
-    //     eventLink: event.checkout_url,
-    //     source: 'tickettailor' as const,
-    //   }
-    // }),
   ]
 
-  // Sort events by date
   const sortedEvents = combinedEvents.sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
   )
 
-  // Filter events to only show today or future events
   const today = new Date()
   today.setHours(0, 0, 0, 0)
 
@@ -128,7 +87,6 @@ export default async function HomePage() {
     return eventDate >= today
   })
 
-  // Fetch Podcasts
   const { docs: cmsPodcasts } = await payload.find({
     collection: 'podcasts',
     depth: 1,
@@ -148,17 +106,15 @@ export default async function HomePage() {
   })
 
   const sortedPodcasts = podcastsForUi.sort((a, b) => {
-    // Convert "2025/01" format to numeric values for proper sorting
     const numA = parseInt(a.date.replace('/', ''))
     const numB = parseInt(b.date.replace('/', ''))
-    return numB - numA // Sort descending (newest first)
+    return numB - numA
   })
 
   const upcomingEventsStructuredData = generateEventsStructuredData(upcomingEvents)
 
   return (
     <>
-      {/* Structured Data for Events */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -166,16 +122,19 @@ export default async function HomePage() {
         }}
       />
 
-      <main className="bg-crilli-900 text-crilli-50 font-main px-8 py-20 uppercase lg:px-20">
+      <main className="bg-crilli-900 text-crilli-50 font-crilli px-8 py-20 uppercase lg:px-20">
         <div className="container mx-auto max-w-7xl">
-          <div className="relative flex flex-col items-center justify-center">
-            <Image
-              src={buildMediaSrc('/api/media/file/Crilli%20Logo%20est%20belf.png')}
-              alt="Crilli DnB Belfast Logo"
-              width={400}
-              height={300}
-              priority
-            />
+          <AnimatedSection className="relative flex flex-col items-center justify-center">
+            <div>
+              <Image
+                src={buildMediaSrc('/api/media/file/Crilli%20Logo%20est%20belf.png')}
+                alt="Crilli DnB Belfast Logo"
+                width={400}
+                height={300}
+                className="h-auto w-auto max-w-full"
+                priority
+              />
+            </div>
             <div className="max-w-4xl pt-10 text-center">
               <p className="mb-4">
                 Established in 2005, <strong>Crilli</strong> is a Drum & Bass + Jungle promotion
@@ -187,14 +146,22 @@ export default async function HomePage() {
                 MArky the pleasure of experiencing beautiful Belfast audiences.
               </p>
             </div>
-          </div>
-          {/* Events */}
-          <div id="events">
-            <h2 className="text-crilli-50 mt-20 mb-6 text-center text-xl font-semibold md:text-left">
-              Upcoming Events
-            </h2>
-          </div>
-          <div className="grid auto-rows-fr grid-cols-1 justify-items-center gap-10 gap-y-15 md:grid-cols-3 md:justify-items-start">
+          </AnimatedSection>
+          <AnimatedSection className="mt-20" animationType="fadeInUp" delay={0.3} trigger="#events">
+            <div id="events">
+              <h2 className="text-crilli-50 mb-6 text-center text-xl font-semibold md:text-left">
+                Upcoming Events
+              </h2>
+            </div>
+          </AnimatedSection>
+
+          <AnimatedSection
+            className="grid auto-rows-fr grid-cols-1 justify-items-center gap-10 gap-y-15 md:grid-cols-3 md:justify-items-start"
+            animationType="fadeInUp"
+            stagger={0.1}
+            delay={0.5}
+            trigger="#events"
+          >
             {upcomingEvents.length > 0 ? (
               upcomingEvents.map((event) => (
                 <EventCard key={`${event.source}-${event.id}`} event={event} />
@@ -205,29 +172,47 @@ export default async function HomePage() {
                 <p className="text-crilli-400 mt-2 text-sm">Check back soon for more events.</p>
               </div>
             )}
-          </div>
-          <div className="mt-8">
+          </AnimatedSection>
+          <AnimatedSection className="mt-8" animationType="fadeInUp" delay={0.7} trigger="#events">
             <Button asChild variant="outline">
               <Link href="/previous-events">See Previous Events</Link>
             </Button>
-          </div>
-          <div className="mt-16 w-full">
+          </AnimatedSection>
+
+          <AnimatedSection
+            className="mt-16 w-full"
+            animationType="scaleIn"
+            delay={0.9}
+            trigger="#events"
+          >
             <Image
               src={buildMediaSrc('/api/media/file/Crilli%20DnB%20-%20Kev.jpg')}
               alt="Crilli DnB promotional image"
-              className="overflow-hidden rounded-sm"
+              className="h-auto w-full max-w-full overflow-hidden rounded-sm"
               width={1200}
               height={400}
               priority
             />
-          </div>
-          {/* Podcasts */}
-          <div id="podcasts">
-            <h2 className="text-crilli-50 mt-20 mb-4 text-center text-xl font-semibold md:text-left">
-              Latest Podcasts
-            </h2>
-          </div>
-          <div className="relative flex flex-col gap-1">
+          </AnimatedSection>
+          <AnimatedSection
+            className="mt-20"
+            animationType="fadeInUp"
+            delay={0.2}
+            trigger="#podcasts"
+          >
+            <div id="podcasts">
+              <h2 className="text-crilli-50 mb-4 text-center text-xl font-semibold md:text-left">
+                Latest Podcasts
+              </h2>
+            </div>
+          </AnimatedSection>
+
+          <AnimatedSection
+            className="relative flex flex-col gap-1"
+            animationType="fadeInLeft"
+            delay={0.4}
+            trigger="#podcasts"
+          >
             <div className="scrollbar-hide overflow-x-auto" id="podcast-scroll">
               <div className="flex min-w-max gap-6 pb-4">
                 {sortedPodcasts.map((podcast) => (
@@ -237,11 +222,8 @@ export default async function HomePage() {
                 ))}
               </div>
             </div>
-            {/* Scroll Right Button */}
             <ScrollButton containerId="podcast-scroll" />
-          </div>
-          {/* Footer */}
-          <Footer />
+          </AnimatedSection>
         </div>
       </main>
     </>

@@ -6,6 +6,10 @@ import config from '@payload-config'
 import { RootPage, generatePageMetadata } from '@payloadcms/next/views'
 import { importMap } from '../importMap'
 
+export const dynamic = 'force-dynamic'
+export const dynamicParams = true
+export const runtime = 'nodejs'
+
 type Args = {
   params: Promise<{
     segments: string[]

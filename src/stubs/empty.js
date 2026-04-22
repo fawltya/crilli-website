@@ -1,3 +1,2 @@
-// Empty stub file for Turbopack resolveAlias
-// This replaces webpack IgnorePlugin functionality
+// Empty module stub for CSS imports that shouldn't be resolved during build
 module.exports = {}

@@ -2,7 +2,8 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
+import { gsap } from 'gsap'
 
 import { Separator } from './ui/separator'
 import { Button } from './ui/button'
@@ -29,6 +30,9 @@ type EventCardProps = {
 
 export default function EventCard({ event, isPastEvent = false }: EventCardProps) {
   const [isHovered, setIsHovered] = useState(false)
+  const cardRef = useRef<HTMLDivElement>(null)
+  const imageRef = useRef<HTMLDivElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
   const imageUrl = buildMediaSrc(event.posterImage.url)
   const { color } = useImageColor(imageUrl)
 
@@ -41,23 +45,84 @@ export default function EventCard({ event, isPastEvent = false }: EventCardProps
     year: 'numeric',
   })
 
-  // Generate hover styles based on extracted color (only for image)
-  const imageHoverStyles =
-    color && isHovered
-      ? {
-          boxShadow: generateGlowShadow(color, 0.8),
-          transform: 'scale(1.01)',
-        }
-      : {}
+  // Hover animations
+  const handleMouseEnter = () => {
+    setIsHovered(true)
+    if (cardRef.current && imageRef.current && contentRef.current) {
+      const tl = gsap.timeline()
+
+      // Card lift effect
+      tl.to(cardRef.current, {
+        y: -1,
+        duration: 0.3,
+        ease: 'power2.out',
+      })
+
+      // Image scale and glow
+      tl.to(
+        imageRef.current,
+        {
+          scale: 1.01,
+          duration: 0.3,
+          ease: 'power2.out',
+        },
+        0,
+      )
+
+      // Content slide up
+      tl.to(
+        contentRef.current,
+        {
+          y: -1,
+          duration: 0.3,
+          ease: 'power2.out',
+        },
+        0,
+      )
+
+      // Add glow effect if color is available
+      if (color) {
+        tl.to(
+          imageRef.current,
+          {
+            boxShadow: generateGlowShadow(color, 0.6),
+            duration: 0.3,
+            ease: 'power2.out',
+          },
+          0,
+        )
+      }
+    }
+  }
+
+  const handleMouseLeave = () => {
+    setIsHovered(false)
+    if (cardRef.current && imageRef.current && contentRef.current) {
+      const tl = gsap.timeline()
+
+      // Reset all animations
+      tl.to([cardRef.current, imageRef.current, contentRef.current], {
+        y: 0,
+        scale: 1,
+        boxShadow: 'none',
+        duration: 0.3,
+        ease: 'power2.out',
+      })
+    }
+  }
 
   return (
     <>
       <div
-        className="flex h-full w-full max-w-md flex-col overflow-visible shadow-lg transition-all duration-300 ease-in-out"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        ref={cardRef}
+        className="flex h-full w-full max-w-md flex-col overflow-visible shadow-lg"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
-        <div className="relative aspect-[4/5] w-full overflow-visible rounded-sm p-2">
+        <div
+          ref={imageRef}
+          className="relative aspect-[4/5] w-full overflow-visible rounded-sm p-2"
+        >
           {event.posterArtist && isHovered && (
             <div className="border-crilli-400/50 bg-crilli-700/70 absolute top-1 right-1 z-50 flex flex-row items-center gap-2 rounded border-1 px-2 py-1 backdrop-blur-md backdrop-opacity-30 transition-all duration-300 ease-in-out">
               <div
@@ -82,38 +147,38 @@ export default function EventCard({ event, isPastEvent = false }: EventCardProps
               src={imageUrl}
               alt={`${event.title} event poster`}
               fill
-              className="rounded-sm object-cover transition-all duration-300 ease-in-out"
+              className="rounded-sm object-cover"
               sizes="(max-width: 768px) 100vw, 400px"
               loading="lazy"
               placeholder="blur"
               blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
-              style={imageHoverStyles}
             />
           ) : (
-            <Link
-              href={event.eventLink || ''}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`View details for ${event.title} event`}
-            >
+            <>
               <Image
                 src={imageUrl}
                 alt={`${event.title} event poster`}
                 fill
-                className="rounded-sm object-cover transition-all duration-300 ease-in-out"
+                className="rounded-sm object-cover"
                 sizes="(max-width: 768px) 100vw, 400px"
                 loading="lazy"
                 placeholder="blur"
                 blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
-                style={imageHoverStyles}
               />
-            </Link>
+              <Link
+                href={event.eventLink || ''}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`View details for ${event.title} event`}
+                className="absolute inset-0 z-10 rounded-sm outline-none ring-0 focus-visible:ring-2 focus-visible:ring-crilli-300/80 focus-visible:ring-offset-2 focus-visible:ring-offset-crilli-900"
+              />
+            </>
           )}
         </div>
 
         {isPastEvent ? (
           // Past event layout
-          <div className="flex flex-col gap-2 px-2 py-6">
+          <div ref={contentRef} className="flex flex-col gap-2 px-2 py-6">
             <h2 className="text-crilli-50 line-clamp-2 pb-1 text-lg leading-5 font-bold">
               {event.title}
             </h2>
@@ -126,7 +191,7 @@ export default function EventCard({ event, isPastEvent = false }: EventCardProps
           </div>
         ) : (
           // Upcoming event layout
-          <div className="flex flex-grow flex-row justify-between gap-4 px-2 py-6">
+          <div ref={contentRef} className="flex flex-grow flex-row justify-between gap-4 px-2 py-6">
             <div className="flex w-full flex-col justify-between">
               <h2 className="text-crilli-50 line-clamp-2 pb-1 text-lg leading-5 font-bold">
                 {event.title}

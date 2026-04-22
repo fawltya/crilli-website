@@ -32,3 +32,25 @@ export type PodcastPlayable = {
   audioUrl: string
   externalLink?: string | null
 }
+
+/**
+ * Convert price from pence (smallest currency unit) to pounds for display
+ * Payload ecommerce plugin stores prices in pence (e.g., 2500 = £25.00)
+ */
+export function formatPriceInGBP(priceInPence: number | null | undefined): string {
+  if (priceInPence === null || priceInPence === undefined) {
+    return '0.00'
+  }
+  const priceInPounds = priceInPence / 100
+  return priceInPounds.toFixed(2)
+}
+
+/**
+ * Get the numeric value in pounds from pence
+ */
+export function getPriceInPounds(priceInPence: number | null | undefined): number {
+  if (priceInPence === null || priceInPence === undefined) {
+    return 0
+  }
+  return priceInPence / 100
+}

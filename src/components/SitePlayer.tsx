@@ -25,7 +25,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const isSeekingRef = React.useRef(false)
 
   const setTrack = React.useCallback((track: PodcastPlayable) => {
-    // Set current track but do NOT start playing or set src yet to avoid network requests
     setCurrent(track)
     setIsPlaying(false)
     if (audioRef.current) {
@@ -38,7 +37,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const togglePlay = React.useCallback(() => {
     if (!audioRef.current) return
     if (audioRef.current.paused) {
-      // Just-in-time set src to avoid any request until user clicks play
       if (current && !audioRef.current.src) {
         audioRef.current.src = buildMediaSrc(current.audioUrl)
       }
@@ -65,7 +63,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     [current],
   )
 
-  // Bind audio element events for time/duration and play/pause sync
   React.useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
@@ -108,7 +105,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       <div className="fixed right-0 bottom-0 left-0 z-50">
         <audio ref={audioRef} className="hidden" preload="none" />
         {current ? (
-          <div className="bg-crilli-800/60 supports-[backdrop-filter]:bg-crilli-800/50 border-crilli-600/30 text-crilli-50 font-main w-full border-t px-4 py-3 uppercase shadow-lg backdrop-blur-md">
+          <div className="bg-crilli-800/60 supports-[backdrop-filter]:bg-crilli-800/50 border-crilli-600/30 text-crilli-50 font-crilli w-full border-t px-4 py-3 uppercase shadow-lg backdrop-blur-md">
             <div className="flex flex-row items-end gap-6 md:items-center">
               <div className="mx-auto flex max-w-7xl items-center gap-4">
                 {current.artworkUrl ? (
