@@ -1,12 +1,28 @@
 import { withPayload } from '@payloadcms/next/withPayload'
 import { createRequire } from 'module'
 import { fileURLToPath } from 'url'
-import { dirname, resolve } from 'path'
+import { dirname, relative, resolve } from 'path'
 import webpack from 'webpack'
 
 const require = createRequire(import.meta.url)
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
+
+/** Turbopack requires project-relative paths in resolveAlias (absolute paths fail to resolve). */
+function projectRelative(absolutePath) {
+  const rel = relative(__dirname, absolutePath)
+  if (!rel || rel.startsWith('..')) {
+    throw new Error(`Path outside project: ${absolutePath}`)
+  }
+  return rel.startsWith('.') ? rel : `./${rel.replace(/\\/g, '/')}`
+}
+
+const ecommerceMainPath = require.resolve('@payloadcms/plugin-ecommerce')
+const ecommerceDistDir = dirname(ecommerceMainPath)
+const seoMainPathForTurbo = require.resolve('@payloadcms/plugin-seo')
+const seoDistDirForTurbo = dirname(seoMainPathForTurbo)
+const vercelBlobMainPathForTurbo = require.resolve('@payloadcms/storage-vercel-blob')
+const vercelBlobDistDirForTurbo = dirname(vercelBlobMainPathForTurbo)
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -17,9 +33,6 @@ const nextConfig = {
       'node_modules/@swc/core-linux-x64-musl',
       'node_modules/@esbuild/linux-x64',
     ],
-  },
-  experimental: {
-    serverComponentsExternalPackages: [],
   },
   webpack: (config, { isServer }) => {
     config.externals = config.externals || []
@@ -177,21 +190,21 @@ const nextConfig = {
     resolveAlias: {
       'cloudflare:sockets': './src/stubs/empty.js',
       'pg-native': './src/stubs/empty.js',
-      '@payloadcms/plugin-ecommerce/client/react': require
-        .resolve('@payloadcms/plugin-ecommerce')
-        .replace('/dist/index.js', '/dist/exports/client/react.js'),
-      '@payloadcms/plugin-ecommerce/rsc': require
-        .resolve('@payloadcms/plugin-ecommerce')
-        .replace('/dist/index.js', '/dist/exports/rsc.js'),
-      '@payloadcms/plugin-ecommerce/client': require
-        .resolve('@payloadcms/plugin-ecommerce')
-        .replace('/dist/index.js', '/dist/exports/client/index.js'),
-      '@payloadcms/plugin-seo/client': require
-        .resolve('@payloadcms/plugin-seo')
-        .replace('/dist/index.js', '/dist/exports/client.js'),
-      '@payloadcms/storage-vercel-blob/client': require
-        .resolve('@payloadcms/storage-vercel-blob')
-        .replace('/dist/index.js', '/dist/exports/client.js'),
+      '@payloadcms/plugin-ecommerce/client/react': projectRelative(
+        resolve(ecommerceDistDir, 'exports/client/react.js'),
+      ),
+      '@payloadcms/plugin-ecommerce/rsc': projectRelative(
+        resolve(ecommerceDistDir, 'exports/rsc.js'),
+      ),
+      '@payloadcms/plugin-ecommerce/client': projectRelative(
+        resolve(ecommerceDistDir, 'exports/client/index.js'),
+      ),
+      '@payloadcms/plugin-seo/client': projectRelative(
+        resolve(seoDistDirForTurbo, 'exports/client.js'),
+      ),
+      '@payloadcms/storage-vercel-blob/client': projectRelative(
+        resolve(vercelBlobDistDirForTurbo, 'exports/client.js'),
+      ),
     },
     resolveExtensions: ['.js', '.jsx', '.ts', '.tsx', '.json', '.mjs'],
   },
