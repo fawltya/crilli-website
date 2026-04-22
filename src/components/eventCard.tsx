@@ -154,12 +154,7 @@ export default function EventCard({ event, isPastEvent = false }: EventCardProps
               blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
             />
           ) : (
-            <Link
-              href={event.eventLink || ''}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`View details for ${event.title} event`}
-            >
+            <>
               <Image
                 src={imageUrl}
                 alt={`${event.title} event poster`}
@@ -170,7 +165,14 @@ export default function EventCard({ event, isPastEvent = false }: EventCardProps
                 placeholder="blur"
                 blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
               />
-            </Link>
+              <Link
+                href={event.eventLink || ''}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`View details for ${event.title} event`}
+                className="absolute inset-0 z-10 rounded-sm outline-none ring-0 focus-visible:ring-2 focus-visible:ring-crilli-300/80 focus-visible:ring-offset-2 focus-visible:ring-offset-crilli-900"
+              />
+            </>
           )}
         </div>
 

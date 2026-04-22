@@ -105,7 +105,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       <div className="fixed right-0 bottom-0 left-0 z-50">
         <audio ref={audioRef} className="hidden" preload="none" />
         {current ? (
-          <div className="bg-crilli-800/60 supports-[backdrop-filter]:bg-crilli-800/50 border-crilli-600/30 text-crilli-50 font-main w-full border-t px-4 py-3 uppercase shadow-lg backdrop-blur-md">
+          <div className="bg-crilli-800/60 supports-[backdrop-filter]:bg-crilli-800/50 border-crilli-600/30 text-crilli-50 font-crilli w-full border-t px-4 py-3 uppercase shadow-lg backdrop-blur-md">
             <div className="flex flex-row items-end gap-6 md:items-center">
               <div className="mx-auto flex max-w-7xl items-center gap-4">
                 {current.artworkUrl ? (

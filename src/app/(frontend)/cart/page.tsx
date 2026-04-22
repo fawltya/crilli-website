@@ -243,17 +243,9 @@ export default function CartPage() {
                             {typeof item.product === 'number' ? `#${item.product}` : 'Unknown'}
                           </h3>
                         )}
-                        {variant && variant.options && Array.isArray(variant.options) && (
+                        {variant && (variant.color || variant.size) && (
                           <p className="text-sm text-gray-400">
-                            {variant.options
-                              .map((opt) => {
-                                if (typeof opt === 'object' && opt !== null && 'label' in opt) {
-                                  return opt.label
-                                }
-                                return null
-                              })
-                              .filter(Boolean)
-                              .join(', ')}
+                            {[variant.color, variant.size].filter(Boolean).join(' · ')}
                           </p>
                         )}
                         {product && !product.title && (

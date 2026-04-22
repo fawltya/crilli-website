@@ -1,8 +1,7 @@
 import axios from 'axios'
 
 const SENDER_API_URL = 'https://api.sender.net/v2'
-// Use SENDER_NET_API_KEY if available (for consistency with existing subscribe route), otherwise SENDER_API_TOKEN
-const SENDER_API_TOKEN = process.env.SENDER_NET_API_KEY || process.env.SENDER_API_TOKEN
+const SENDER_API_TOKEN = process.env.SENDER_NET_API_KEY
 const SENDER_CAMPAIGN_ID = process.env.SENDER_CAMPAIGN_ID || 'eg2AVD'
 const SENDER_TEST_EMAIL = process.env.SENDER_TEST_EMAIL || 'seamus0689@gmail.com'
 

@@ -4,7 +4,7 @@ import Link from 'next/link'
 import config from '@/payload.config'
 import type { Product, Media } from '@/payload-types'
 import { buildMediaSrc, formatPriceInGBP } from '@/lib/utils'
-
+import CornerBorder from '@/components/ui/cornerBorder'
 export const metadata = {
   title: 'Shop - Crilli',
   description: 'Browse our collection of merchandise',

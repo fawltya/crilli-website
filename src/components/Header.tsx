@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { List, X } from '@phosphor-icons/react'
-import CartIcon from './CartIcon'
+// import CartIcon from './CartIcon'
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -18,7 +18,7 @@ export default function Header() {
 
   const navigationLinks = [
     { href: '/', label: 'Home' },
-    { href: '/shop', label: 'Shop' },
+    // { href: '/shop', label: 'Shop' },
     { href: '/previous-events', label: 'Previous Events' },
   ]
 
@@ -76,7 +76,7 @@ export default function Header() {
             >
               {isMobileMenuOpen ? <X size={24} /> : <List size={24} />}
             </button>
-            <CartIcon />
+            {/* <CartIcon /> */}
           </div>
         </div>
 

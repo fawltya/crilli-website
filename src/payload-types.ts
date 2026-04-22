@@ -78,6 +78,7 @@ export interface Config {
     venues: Venue;
     podcasts: Podcast;
     'poster-artist': PosterArtist;
+    designs: Design;
     addresses: Address;
     variants: Variant;
     variantTypes: VariantType;
@@ -106,6 +107,7 @@ export interface Config {
     venues: VenuesSelect<false> | VenuesSelect<true>;
     podcasts: PodcastsSelect<false> | PodcastsSelect<true>;
     'poster-artist': PosterArtistSelect<false> | PosterArtistSelect<true>;
+    designs: DesignsSelect<false> | DesignsSelect<true>;
     addresses: AddressesSelect<false> | AddressesSelect<true>;
     variants: VariantsSelect<false> | VariantsSelect<true>;
     variantTypes: VariantTypesSelect<false> | VariantTypesSelect<true>;
@@ -122,12 +124,14 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
+  fallbackLocale: null;
   globals: {};
   globalsSelect: {};
   locale: null;
-  user: User & {
-    collection: 'users';
+  widgets: {
+    collections: CollectionsWidget;
   };
+  user: User;
   jobs: {
     tasks: unknown;
     workflows: unknown;
@@ -190,6 +194,7 @@ export interface User {
       }[]
     | null;
   password?: string | null;
+  collection: 'users';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -345,6 +350,41 @@ export interface Podcast {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "designs".
+ */
+export interface Design {
+  id: number;
+  /**
+   * A descriptive name for this design (e.g., "Crilli Logo - Red", "Festival Design")
+   */
+  name: string;
+  /**
+   * The color this design is intended for (e.g., "Red", "Blue"). Used to organize designs and match them to variant colors.
+   */
+  color?: string | null;
+  printFiles?: {
+    /**
+     * URL to the front print file
+     */
+    front?: string | null;
+    /**
+     * URL to the back print file
+     */
+    back?: string | null;
+    /**
+     * URL to the left print file
+     */
+    left?: string | null;
+    /**
+     * URL to the right print file
+     */
+    right?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "addresses".
  */
 export interface Address {
@@ -415,32 +455,29 @@ export interface Variant {
    */
   title?: string | null;
   product: number | Product;
-  options: (number | VariantOption)[];
   priceInGBPEnabled?: boolean | null;
   priceInGBP?: number | null;
+  /**
+   * The color name for this variant (e.g., Red, Blue)
+   */
+  color?: string | null;
+  /**
+   * The size name for this variant (e.g., Small, Large)
+   */
+  size?: string | null;
+  /**
+   * Select the design to use for this variant. Tip: Create designs with matching colors (e.g., if variant is "Red", select a design with color "Red"). Designs can be reused across different variants and products.
+   */
+  design?: (number | null) | Design;
   inkthreadable: {
     /**
      * Auto-generated from product code, color code, and size code (format: {productCode}-{colorCode}-{sizeCode})
      */
     productNumber: string;
-    printFiles?: {
-      /**
-       * URL to the front print file
-       */
-      front?: string | null;
-      /**
-       * URL to the back print file
-       */
-      back?: string | null;
-      /**
-       * URL to the left print file
-       */
-      left?: string | null;
-      /**
-       * URL to the right print file
-       */
-      right?: string | null;
-    };
+    /**
+     * The wholesale cost price from Inkthreadable in pence (e.g., 1200 for £12.00). This is what Inkthreadable charges you.
+     */
+    costPrice?: number | null;
   };
   updatedAt: string;
   createdAt: string;
@@ -470,6 +507,38 @@ export interface Product {
    * Detailed description of the product
    */
   description?: string | null;
+  /**
+   * Add the colors available for this product. Variants will be auto-generated.
+   */
+  colors?:
+    | {
+        /**
+         * e.g., Red, Blue, Black
+         */
+        name: string;
+        /**
+         * Short code for this color (e.g., RED, BLK). Used in auto-generated product numbers.
+         */
+        code: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Add the sizes available for this product. Variants will be auto-generated.
+   */
+  sizes?:
+    | {
+        /**
+         * e.g., Small, Medium, Large, XL
+         */
+        name: string;
+        /**
+         * Short code for this size (e.g., S, M, L, XL). Used in auto-generated product numbers.
+         */
+        code: string;
+        id?: string | null;
+      }[]
+    | null;
   /**
    * Upload mockup images of the product
    */
@@ -518,6 +587,10 @@ export interface VariantType {
 export interface VariantOption {
   id: number;
   _variantOptions_options_order?: string | null;
+  /**
+   * The product this variant option belongs to. Colors and sizes are product-specific.
+   */
+  product: number | Product;
   variantType: number | VariantType;
   label: string;
   /**
@@ -546,6 +619,7 @@ export interface Cart {
         id?: string | null;
       }[]
     | null;
+  secret?: string | null;
   customer?: (number | null) | User;
   purchasedAt?: string | null;
   status?: ('active' | 'purchased' | 'abandoned') | null;
@@ -678,6 +752,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'poster-artist';
         value: number | PosterArtist;
+      } | null)
+    | ({
+        relationTo: 'designs';
+        value: number | Design;
       } | null)
     | ({
         relationTo: 'addresses';
@@ -886,6 +964,24 @@ export interface PosterArtistSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "designs_select".
+ */
+export interface DesignsSelect<T extends boolean = true> {
+  name?: T;
+  color?: T;
+  printFiles?:
+    | T
+    | {
+        front?: T;
+        back?: T;
+        left?: T;
+        right?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "addresses_select".
  */
 export interface AddressesSelect<T extends boolean = true> {
@@ -911,21 +1007,16 @@ export interface AddressesSelect<T extends boolean = true> {
 export interface VariantsSelect<T extends boolean = true> {
   title?: T;
   product?: T;
-  options?: T;
   priceInGBPEnabled?: T;
   priceInGBP?: T;
+  color?: T;
+  size?: T;
+  design?: T;
   inkthreadable?:
     | T
     | {
         productNumber?: T;
-        printFiles?:
-          | T
-          | {
-              front?: T;
-              back?: T;
-              left?: T;
-              right?: T;
-            };
+        costPrice?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -950,6 +1041,7 @@ export interface VariantTypesSelect<T extends boolean = true> {
  */
 export interface VariantOptionsSelect<T extends boolean = true> {
   _variantOptions_options_order?: T;
+  product?: T;
   variantType?: T;
   label?: T;
   value?: T;
@@ -970,6 +1062,20 @@ export interface ProductsSelect<T extends boolean = true> {
   priceInGBPEnabled?: T;
   priceInGBP?: T;
   description?: T;
+  colors?:
+    | T
+    | {
+        name?: T;
+        code?: T;
+        id?: T;
+      };
+  sizes?:
+    | T
+    | {
+        name?: T;
+        code?: T;
+        id?: T;
+      };
   gallery?:
     | T
     | {
@@ -1000,6 +1106,7 @@ export interface CartsSelect<T extends boolean = true> {
         quantity?: T;
         id?: T;
       };
+  secret?: T;
   customer?: T;
   purchasedAt?: T;
   status?: T;
@@ -1123,6 +1230,16 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "collections_widget".
+ */
+export interface CollectionsWidget {
+  data?: {
+    [k: string]: unknown;
+  };
+  width: 'full';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

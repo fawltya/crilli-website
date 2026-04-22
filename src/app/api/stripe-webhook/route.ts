@@ -121,6 +121,7 @@ export async function POST(request: NextRequest) {
           order,
           shippingDetails,
           customerEmail,
+          payload,
         })
 
         console.log('[Webhook] Inkthreadable order created:', JSON.stringify(inkthreadableOrder, null, 2))

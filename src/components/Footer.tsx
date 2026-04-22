@@ -17,7 +17,7 @@ export default function Footer({
   showSubscriptionForm = true,
   navigationLinks = [
     { href: '/#events', label: 'Events' },
-    { href: '/shop', label: 'Shop' },
+    // { href: '/shop', label: 'Shop' },
     { href: '/#podcasts', label: 'Podcasts' },
   ],
 }: FooterProps) {
@@ -32,6 +32,7 @@ export default function Footer({
             alt="Crilli DnB Belfast Logo"
             width={200}
             height={300}
+            className="h-auto w-auto max-w-[200px]"
             loading="lazy"
           />
           <div className="md:align-end flex flex-col justify-end gap-4 text-center md:text-right">

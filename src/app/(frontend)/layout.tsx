@@ -16,30 +16,22 @@ export const metadata = {
   title: 'Crilli DnB Belfast',
 }
 
-export default async function RootLayout(props: { children: React.ReactNode }) {
+export default async function FrontendLayout(props: { children: React.ReactNode }) {
   const { children } = props
 
   return (
-    <html lang="en" className="bg-crilli-900">
-      <head>
-        <meta name="apple-mobile-web-app-title" content="Crilli DnB" />
-        <link rel="preconnect" href="https://jfkf0uemou6lrnps.public.blob.vercel-storage.com" />
-        <link rel="preconnect" href="https://uploads.tickettailor.com" />
-        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-      </head>
-      <body>
-        <CartProvider>
-          <PlayerProvider>
-            <Header />
-            <main>{children}</main>
-            <Footer />
-          </PlayerProvider>
-        </CartProvider>
-        <SmoothScroll />
-        <ScrollToTop />
-        <Analytics />
-        <SpeedInsights />
-      </body>
-    </html>
+    <>
+      <CartProvider>
+        <PlayerProvider>
+          <Header />
+          <main>{children}</main>
+          <Footer />
+        </PlayerProvider>
+      </CartProvider>
+      <SmoothScroll />
+      <ScrollToTop />
+      <Analytics />
+      <SpeedInsights />
+    </>
   )
 }

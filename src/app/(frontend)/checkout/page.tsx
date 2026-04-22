@@ -2,12 +2,13 @@
 
 export const dynamic = 'force-dynamic'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useCart } from '@payloadcms/plugin-ecommerce/client/react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { formatPriceInGBP } from '@/lib/utils'
 import { CircleNotch } from '@phosphor-icons/react'
+import type { Product, Variant } from '@/payload-types'
 
 export default function CheckoutPage() {
   const { cart } = useCart()
@@ -30,6 +31,46 @@ export default function CheckoutPage() {
       router.push('/cart')
     }
   }, [cart, router])
+
+  const calculatedSubtotal = useMemo(() => {
+    const items = cart?.items || []
+    return items.reduce((total, item) => {
+      const productData = item.product
+      const variantData = item.variant
+
+      let product: Product | null = null
+      if (typeof productData === 'object' && productData !== null && 'id' in productData) {
+        product = productData as Product
+      }
+
+      const variant =
+        variantData && typeof variantData === 'object' ? (variantData as Variant) : undefined
+
+      let price = 0
+
+      if (typeof productData === 'object' && productData !== null && 'priceInGBP' in productData) {
+        const productPrice = (productData as { priceInGBP?: number; priceInGBPEnabled?: boolean })
+          .priceInGBP
+        const priceEnabled = (productData as { priceInGBPEnabled?: boolean }).priceInGBPEnabled
+        if (productPrice !== undefined && productPrice !== null && priceEnabled !== false) {
+          price = productPrice
+        }
+      }
+
+      if (variant?.priceInGBP && variant.priceInGBPEnabled !== false) {
+        price = variant.priceInGBP
+      } else if (product?.priceInGBP && product.priceInGBPEnabled !== false) {
+        price = product.priceInGBP
+      }
+
+      const quantity = item.quantity || 1
+      const itemTotal = price * quantity
+
+      return total + itemTotal
+    }, 0)
+  }, [cart?.items])
+
+  const subtotal = cart?.subtotal && cart.subtotal > 0 ? cart.subtotal : calculatedSubtotal
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -72,8 +113,6 @@ export default function CheckoutPage() {
   if (!cart || !cart.items || cart.items.length === 0) {
     return null
   }
-
-  const subtotal = cart.subtotal || 0
 
   return (
     <div className="min-h-screen text-white">

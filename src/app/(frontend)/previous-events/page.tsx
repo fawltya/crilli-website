@@ -96,7 +96,7 @@ export default async function PreviousEventsPage() {
         }}
       />
 
-      <main className="bg-crilli-900 text-crilli-50 font-main px-8 py-20 uppercase lg:px-20">
+      <main className="bg-crilli-900 text-crilli-50 font-crilli px-8 py-20 uppercase lg:px-20">
         <div className="container mx-auto max-w-7xl">
           <div className="relative mb-16 flex flex-col items-center justify-center">
             <Image
@@ -104,6 +104,7 @@ export default async function PreviousEventsPage() {
               alt="Crilli DnB Belfast Logo"
               width={300}
               height={225}
+              className="h-auto w-auto max-w-full"
               priority
             />
             <div className="max-w-4xl pt-10 text-center">

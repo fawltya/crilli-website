@@ -122,7 +122,7 @@ export default async function HomePage() {
         }}
       />
 
-      <main className="bg-crilli-900 text-crilli-50 font-main px-8 py-20 uppercase lg:px-20">
+      <main className="bg-crilli-900 text-crilli-50 font-crilli px-8 py-20 uppercase lg:px-20">
         <div className="container mx-auto max-w-7xl">
           <AnimatedSection className="relative flex flex-col items-center justify-center">
             <div>
@@ -131,6 +131,7 @@ export default async function HomePage() {
                 alt="Crilli DnB Belfast Logo"
                 width={400}
                 height={300}
+                className="h-auto w-auto max-w-full"
                 priority
               />
             </div>
@@ -187,7 +188,7 @@ export default async function HomePage() {
             <Image
               src={buildMediaSrc('/api/media/file/Crilli%20DnB%20-%20Kev.jpg')}
               alt="Crilli DnB promotional image"
-              className="overflow-hidden rounded-sm"
+              className="h-auto w-full max-w-full overflow-hidden rounded-sm"
               width={1200}
               height={400}
               priority

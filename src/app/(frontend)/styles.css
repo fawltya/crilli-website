@@ -3,7 +3,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-main: var(--font-sometype-mono);
+  --font-crilli: var(--font-sometype-mono);
 
   --color-crilli-50: rgb(245 245 246);
   --color-crilli-100: rgb(225 225 227);

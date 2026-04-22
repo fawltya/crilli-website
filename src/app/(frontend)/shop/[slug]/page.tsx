@@ -2,10 +2,9 @@ import Image from 'next/image'
 import { getPayload } from 'payload'
 import { notFound } from 'next/navigation'
 import config from '@/payload.config'
-import type { Product, Media, Variant, VariantOption, VariantType } from '@/payload-types'
+import type { Product, Media, Variant } from '@/payload-types'
 import { buildMediaSrc, formatPriceInGBP } from '@/lib/utils'
 import ProductVariantSelector from '@/components/ProductVariantSelector'
-
 export const metadata = {
   title: 'Product - Crilli',
   description: 'Product details',
@@ -59,24 +58,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
   }
 
   const variants = product.variants?.docs || []
-  const variantTypes = (product.variantTypes || []) as VariantType[]
-  const variantOptionsByType: Record<string, VariantOption[]> = {}
-
-  for (const variantTypeRef of variantTypes) {
-    const variantTypeId = typeof variantTypeRef === 'object' ? variantTypeRef.id : variantTypeRef
-    const variantType = (await payload.findByID({
-      collection: 'variantTypes',
-      id: variantTypeId,
-      depth: 2,
-    })) as VariantType
-
-    if (variantType && variantType.options?.docs) {
-      const options = variantType.options.docs.filter(
-        (opt): opt is VariantOption => typeof opt === 'object' && opt !== null,
-      )
-      variantOptionsByType[variantType.name.toLowerCase()] = options
-    }
+  const productWithVariants = product as Product & {
+    colors?: Array<{ name: string; code: string }>
+    sizes?: Array<{ name: string; code: string }>
   }
+  const colors = productWithVariants.colors || []
+  const sizes = productWithVariants.sizes || []
 
   const galleryImages = (product.gallery || [])
     .map((item) => item.image as Media)
@@ -145,7 +132,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
               <ProductVariantSelector
                 product={product}
                 variants={variants as Variant[]}
-                variantOptionsByType={variantOptionsByType}
+                colors={colors}
+                sizes={sizes}
               />
             )}
           </div>
