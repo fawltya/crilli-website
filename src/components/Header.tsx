@@ -17,7 +17,7 @@ export default function Header() {
 
   const navigationLinks = [
     { href: '/', label: 'Home' },
-    // { href: '/shop', label: 'Shop' },
+    { href: '/#merch', label: 'Merch' },
     { href: '/previous-events', label: 'Previous Events' },
   ]
 

@@ -79,6 +79,7 @@ export interface Config {
     podcasts: Podcast;
     'poster-artist': PosterArtist;
     designs: Design;
+    merch: Merch;
     addresses: Address;
     variants: Variant;
     variantTypes: VariantType;
@@ -108,6 +109,7 @@ export interface Config {
     podcasts: PodcastsSelect<false> | PodcastsSelect<true>;
     'poster-artist': PosterArtistSelect<false> | PosterArtistSelect<true>;
     designs: DesignsSelect<false> | DesignsSelect<true>;
+    merch: MerchSelect<false> | MerchSelect<true>;
     addresses: AddressesSelect<false> | AddressesSelect<true>;
     variants: VariantsSelect<false> | VariantsSelect<true>;
     variantTypes: VariantTypesSelect<false> | VariantTypesSelect<true>;
@@ -125,8 +127,12 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'merch-page': MerchPage;
+  };
+  globalsSelect: {
+    'merch-page': MerchPageSelect<false> | MerchPageSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -380,6 +386,28 @@ export interface Design {
      */
     right?: string | null;
   };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "merch".
+ */
+export interface Merch {
+  id: number;
+  title: string;
+  /**
+   * Display price, no £ prefix needed (e.g. "25", "12.50")
+   */
+  price?: string | null;
+  /**
+   * TicketTailor link where people buy this item
+   */
+  buyLink: string;
+  /**
+   * Square product image
+   */
+  image: number | Media;
   updatedAt: string;
   createdAt: string;
 }
@@ -758,6 +786,10 @@ export interface PayloadLockedDocument {
         value: number | Design;
       } | null)
     | ({
+        relationTo: 'merch';
+        value: number | Merch;
+      } | null)
+    | ({
         relationTo: 'addresses';
         value: number | Address;
       } | null)
@@ -977,6 +1009,18 @@ export interface DesignsSelect<T extends boolean = true> {
         left?: T;
         right?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "merch_select".
+ */
+export interface MerchSelect<T extends boolean = true> {
+  title?: T;
+  price?: T;
+  buyLink?: T;
+  image?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1230,6 +1274,29 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "merch-page".
+ */
+export interface MerchPage {
+  id: number;
+  /**
+   * Optional paragraph shown under the Merch heading. Leave empty to hide it.
+   */
+  intro?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "merch-page_select".
+ */
+export interface MerchPageSelect<T extends boolean = true> {
+  intro?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

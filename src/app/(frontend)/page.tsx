@@ -4,13 +4,15 @@ import Link from 'next/link'
 import config from '@/payload.config'
 import './styles.css'
 import EventCard from '@/components/eventCard'
+import MerchCard from '@/components/merchCard'
 import PodcastCard from '@/components/podcastCard'
 import ScrollButton from '@/components/ScrollButton'
 import AnimatedSection from '@/components/AnimatedSection'
-import type { Event, Media, Venue, Podcast, PosterArtist } from '@/payload-types'
+import type { Event, Media, Venue, Podcast, PosterArtist, Merch } from '@/payload-types'
 import { Button } from '@/components/ui/button'
 import { buildMediaSrc } from '@/lib/utils'
 import { generateEventsStructuredData } from '@/lib/structuredData'
+import { defaultMerchIntro } from '@/globals/MerchPage'
 
 export const metadata = {
   title: 'Crilli DnB Belfast',
@@ -111,6 +113,36 @@ export default async function HomePage() {
     return numB - numA
   })
 
+  const { docs: merchDocs } = await payload.find({
+    collection: 'merch',
+    depth: 1,
+    limit: 100,
+    sort: '-createdAt',
+  })
+
+  const merchItems = merchDocs
+    .map((item: Merch) => {
+      const image = item.image as Media
+      if (!image?.url || !item.buyLink) return null
+      return {
+        id: String(item.id),
+        title: item.title,
+        price: item.price,
+        buyLink: item.buyLink,
+        image: { url: image.url },
+      }
+    })
+    .filter((item): item is NonNullable<typeof item> => item !== null)
+
+  let merchIntro: string | null = defaultMerchIntro
+  try {
+    const merchPage = await payload.findGlobal({ slug: 'merch-page' })
+    merchIntro =
+      merchPage.intro == null ? defaultMerchIntro : merchPage.intro.trim() || null
+  } catch {
+    merchIntro = defaultMerchIntro
+  }
+
   const upcomingEventsStructuredData = generateEventsStructuredData(upcomingEvents)
 
   return (
@@ -179,6 +211,47 @@ export default async function HomePage() {
               <Link href="/previous-events">See Previous Events</Link>
             </Button>
           </AnimatedSection>
+
+          {merchItems.length > 0 || merchIntro ? (
+            <>
+              <AnimatedSection className="mt-20" animationType="fadeInUp" delay={0.2} trigger="#merch">
+                <div id="merch">
+                  <h2 className="text-crilli-50 mb-4 text-center text-xl font-semibold md:text-left">
+                    Merch
+                  </h2>
+                  {merchIntro ? (
+                    <p className="text-crilli-200 normal-case mb-6 max-w-3xl text-center text-sm leading-relaxed md:text-left">
+                      {merchIntro}
+                    </p>
+                  ) : null}
+                </div>
+              </AnimatedSection>
+              {merchItems.length > 0 ? (
+                <AnimatedSection
+                  className="grid auto-rows-fr grid-cols-1 justify-items-center gap-10 gap-y-15 md:grid-cols-3 md:justify-items-start"
+                  animationType="fadeInUp"
+                  stagger={0.1}
+                  delay={0.3}
+                  trigger="#merch"
+                >
+                  {merchItems.map((item) => (
+                    <MerchCard key={item.id} item={item} />
+                  ))}
+                </AnimatedSection>
+              ) : null}
+              <AnimatedSection className="mt-8" animationType="fadeInUp" delay={0.4} trigger="#merch">
+                <Button asChild variant="outline">
+                  <Link
+                    href="https://www.tickettailor.com/events/crillidnb/store?deniedParams=Y2hlY2tvdXRfaWQsY2hlY2tvdXRfdHlwZQ==#top"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View all merch
+                  </Link>
+                </Button>
+              </AnimatedSection>
+            </>
+          ) : null}
 
           <AnimatedSection
             className="mt-16 w-full"
