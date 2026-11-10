@@ -17,7 +17,7 @@ export default function Footer({
   showSubscriptionForm = true,
   navigationLinks = [
     { href: '/#events', label: 'Events' },
-    // { href: '/shop', label: 'Shop' },
+    { href: '/#merch', label: 'Merch' },
     { href: '/#podcasts', label: 'Podcasts' },
   ],
 }: FooterProps) {

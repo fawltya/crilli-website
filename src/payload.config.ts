@@ -14,6 +14,8 @@ import { Venues } from './collections/Venues'
 import { Podcasts } from './collections/Podcasts'
 import { posterArtist } from './collections/PosterArtists'
 import { Designs } from './collections/Designs'
+import { Merch } from './collections/Merch'
+import { MerchPage } from './globals/MerchPage'
 
 const dirname = path.resolve(process.cwd(), 'src')
 
@@ -24,7 +26,8 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Events, Venues, Podcasts, posterArtist, Designs],
+  collections: [Users, Media, Events, Venues, Podcasts, posterArtist, Designs, Merch],
+  globals: [MerchPage],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
